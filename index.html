@@ -261,6 +261,26 @@
                 moveHistory: []
             };
 
+            // Piece images from a reliable CDN
+            const pieceImages = {
+                white: {
+                    pawn: 'https://upload.wikimedia.org/wikipedia/commons/4/45/Chess_plt45.svg',
+                    rook: 'https://upload.wikimedia.org/wikipedia/commons/7/72/Chess_rlt45.svg',
+                    knight: 'https://upload.wikimedia.org/wikipedia/commons/7/70/Chess_nlt45.svg',
+                    bishop: 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Chess_blt45.svg',
+                    queen: 'https://upload.wikimedia.org/wikipedia/commons/1/15/Chess_qlt45.svg',
+                    king: 'https://upload.wikimedia.org/wikipedia/commons/4/42/Chess_klt45.svg'
+                },
+                black: {
+                    pawn: 'https://upload.wikimedia.org/wikipedia/commons/c/c7/Chess_pdt45.svg',
+                    rook: 'https://upload.wikimedia.org/wikipedia/commons/f/ff/Chess_rdt45.svg',
+                    knight: 'https://upload.wikimedia.org/wikipedia/commons/e/ef/Chess_ndt45.svg',
+                    bishop: 'https://upload.wikimedia.org/wikipedia/commons/9/98/Chess_bdt45.svg',
+                    queen: 'https://upload.wikimedia.org/wikipedia/commons/4/47/Chess_qdt45.svg',
+                    king: 'https://upload.wikimedia.org/wikipedia/commons/f/f0/Chess_kdt45.svg'
+                }
+            };
+
             // DOM elements
             const chessboard = document.getElementById('chessboard');
             const gameStatus = document.getElementById('game-status');
@@ -322,10 +342,13 @@
                 
                 for (let row = 0; row < 8; row++) {
                     for (let col = 0; col < 8; col++) {
+                        const displayRow = gameState.boardFlipped ? 7 - row : row;
+                        const displayCol = gameState.boardFlipped ? 7 - col : col;
+                        
                         const square = document.createElement('div');
                         square.className = `square ${(row + col) % 2 === 0 ? 'light' : 'dark'}`;
-                        square.dataset.row = gameState.boardFlipped ? 7 - row : row;
-                        square.dataset.col = gameState.boardFlipped ? 7 - col : col;
+                        square.dataset.row = row;
+                        square.dataset.col = col;
                         
                         // Highlight selected square and possible moves
                         if (gameState.selectedPiece) {
@@ -348,7 +371,7 @@
                             pieceElement.draggable = piece.color === gameState.currentPlayer && !gameState.gameOver;
                             
                             // Set piece image
-                            pieceElement.style.backgroundImage = `url('https://raw.githubusercontent.com/lichess-org/lila/master/public/piece/cburnett/${piece.color[0]}${piece.type[0].toUpperCase()}${piece.type.slice(1)}.svg')`;
+                            pieceElement.style.backgroundImage = `url('${pieceImages[piece.color][piece.type]}')`;
                             
                             // Drag events
                             pieceElement.addEventListener('dragstart', handleDragStart);
@@ -740,7 +763,7 @@
                     const whiteMove = gameState.moveHistory[i];
                     const blackMove = gameState.moveHistory[i + 1] || '';
                     
-                    moveEntry.textContent = `${i / 2 + 1}. ${whiteMove} ${blackMove}`;
+                    moveEntry.textContent = `${Math.floor(i / 2) + 1}. ${whiteMove} ${blackMove}`;
                     moveHistory.appendChild(moveEntry);
                 }
                 
@@ -1002,8 +1025,11 @@
                 const data = e.dataTransfer.getData('text/plain');
                 const [fromRow, fromCol] = data.split(',').map(Number);
                 
-                const toRow = parseInt(e.target.dataset.row);
-                const toCol = parseInt(e.target.dataset.col);
+                const square = e.target.closest('.square');
+                if (!square) return;
+                
+                const toRow = parseInt(square.dataset.row);
+                const toCol = parseInt(square.dataset.col);
                 
                 movePiece(fromRow, fromCol, toRow, toCol);
             }
