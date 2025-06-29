@@ -1,325 +1,177 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>🌸 chiikawa dreamsite ✨</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>🌸 chiikawa dreamsite ✨</title>
 
-<!-- cute mochi favicon -->
-<link rel="icon" href="littlechii.jpg" type="image/jpg" />
+  <!-- cute hosted favicon -->
+  <link rel="icon" href="https://www.littleorange.com.au/wp-content/uploads/CHIIKAWASITTINGPLUSHCAPSULETOYGASHAPON2.webp" type="image/webp" />
 
-<style>
-  :root {
-    --pink: #fecde0;
-    --peach: #faefd9;
-    --blue: #dfebfd;
-    --lavender: #ffdef1;
-    --font-main: 'Comic Neue', cursive;
-    --shadow-pink: rgba(255, 182, 193, 0.4);
-    --primary-text: #c71585;
-    --background-light: #fff8fc;
-  }
-  * {
-    margin: 0; padding: 0; box-sizing: border-box;
-  }
-  html, body {
-    font-family: var(--font-main);
-    height: 100%;
-    background: linear-gradient(135deg, var(--pink), var(--peach), var(--blue), var(--lavender));
-    background-size: 400% 400%;
-    animation: gradient 20s ease infinite;
-    scroll-behavior: smooth;
-    overflow-x: hidden;
-  }
-  @keyframes gradient {
-    0% {background-position:0% 50%;}
-    50% {background-position:100% 50%;}
-    100% {background-position:0% 50%;}
-  }
+  <style>
+    :root {
+      --pink: #fecde0;
+      --peach: #faefd9;
+      --blue: #dfebfd;
+      --lavender: #ffdef1;
+      --font-main: 'Comic Neue', cursive;
+      --shadow-pink: rgba(255, 182, 193, 0.4);
+      --primary-text: #c71585;
+      --background-light: #fff8fc;
+    }
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+    html, body {
+      font-family: var(--font-main);
+      height: 100%;
+      background: linear-gradient(135deg, var(--pink), var(--peach), var(--blue), var(--lavender));
+      background-size: 400% 400%;
+      animation: gradient 20s ease infinite;
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+    @keyframes gradient {
+      0% {background-position:0% 50%;}
+      50% {background-position:100% 50%;}
+      100% {background-position:0% 50%;}
+    }
 
-  /* scroll progress bar */
-  #progressBar {
-    position: fixed;
-    top: 0; left: 0;
-    height: 5px;
-    background: linear-gradient(90deg, #ffb6c1, #ff69b4);
-    width: 0%;
-    z-index: 9999;
-    border-radius: 0 0 8px 8px;
-  }
+    #progressBar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 5px;
+      background: linear-gradient(90deg, #ffb6c1, #ff69b4);
+      width: 0%;
+      z-index: 9999;
+      border-radius: 0 0 8px 8px;
+    }
 
-  header {
-    position: sticky;
-    top: 0;
-    background: rgba(255 255 255 / 0.9);
-    backdrop-filter: blur(10px);
-    z-index: 10000;
-    text-align: center;
-    padding: 2rem 1rem;
-    box-shadow: 0 4px 12px var(--shadow-pink);
-    border-bottom: 2px solid #ffb6c1;
-    user-select: none;
-  }
-  header h1 {
-    font-size: 3rem;
-    color: var(--primary-text);
-    text-shadow: 1px 1px #fff;
-    animation: bounce 2s infinite;
-  }
-  @keyframes bounce {
-    0%,100% {transform: translateY(0);}
-    50% {transform: translateY(-10px);}
-  }
-  nav {
-    margin-top: 1rem;
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-  nav a {
-    text-decoration: none;
-    color: #d63384;
-    background: #fff0f5;
-    padding: 0.6rem 1.2rem;
-    border-radius: 20px;
-    font-weight: bold;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 5px var(--shadow-pink);
-    position: relative;
-    overflow: hidden;
-  }
-  nav a::after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0; left: -100%;
-    background: #ffd6e8;
-    transition: all 0.3s ease;
-    border-radius: 20px;
-    z-index: -1;
-  }
-  nav a:hover::after {
-    left: 0;
-  }
-  nav a:hover {
-    color: #c71585;
-    transform: scale(1.1);
-    box-shadow: 0 6px 15px rgba(255,182,193,0.6);
-  }
+    header {
+      position: sticky;
+      top: 0;
+      background: rgba(255 255 255 / 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 10000;
+      text-align: center;
+      padding: 2rem 1rem;
+      box-shadow: 0 4px 12px var(--shadow-pink);
+      border-bottom: 2px solid #ffb6c1;
+      user-select: none;
+    }
+    header h1 {
+      font-size: 3rem;
+      color: var(--primary-text);
+      text-shadow: 1px 1px #fff;
+      animation: bounce 2s infinite;
+    }
+    @keyframes bounce {
+      0%,100% {transform: translateY(0);}
+      50% {transform: translateY(-10px);}
+    }
 
-  section {
-    max-width: 1100px;
-    margin: 3rem auto;
-    padding: 2rem;
-    background: var(--background-light);
-    border-radius: 20px;
-    box-shadow: 0 8px 20px var(--shadow-pink);
-    position: relative;
-    z-index: 10;
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
-  }
-  section.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  section h2 {
-    color: var(--primary-text);
-    font-size: 2rem;
-    margin-bottom: 1rem;
-    text-align: center;
-    text-shadow: 1px 1px #ffd6e8;
-  }
-  .card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
-    gap: 2rem;
-  }
-  .card {
-    background: #fff0f8;
-    border-radius: 20px;
-    padding: 1.5rem;
-    box-shadow: 0 6px 18px var(--shadow-pink);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-    user-select: none;
-    border: 2px solid transparent;
-    text-align: center;
-  }
-  .card:hover, .card:focus {
-    transform: translateY(-10px) rotate(2deg);
-    box-shadow: 0 16px 40px rgba(255,182,193,0.8);
-    border-color: #ff69b4;
-    outline: none;
-  }
-  .card img {
-    width: 100%;
-    border-radius: 12px;
-    margin-bottom: 1rem;
-    border: 3px solid #ffb6c1;
-  }
-  .card h3 {
-    color: var(--primary-text);
-    font-size: 1.4rem;
-    margin-bottom: 0.5rem;
-  }
-  .card p {
-    font-size: 1rem;
-    color: #444;
-  }
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    max-width: 500px;
-    margin: 0 auto;
-  }
-  form input, form textarea {
-    padding: 0.8rem;
-    border-radius: 12px;
-    border: 2px solid #ffd6e8;
-    font-family: var(--font-main);
-    font-size: 1rem;
-    transition: border-color 0.3s ease;
-  }
-  form input:focus, form textarea:focus {
-    border-color: #ff69b4;
-    outline: none;
-  }
-  form button {
-    background: #ffb6c1;
-    color: white;
-    border: none;
-    padding: 1rem 2rem;
-    font-size: 1.1rem;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: background 0.3s ease, box-shadow 0.3s ease;
-    align-self: center;
-    box-shadow: 0 6px 18px var(--shadow-pink);
-  }
-  form button:hover {
-    background: #ff69b4;
-    box-shadow: 0 8px 25px rgba(255,105,180,0.9);
-  }
-  footer {
-    text-align: center;
-    padding: 3rem 1rem;
-    font-size: 0.9rem;
-    color: #888;
-    user-select: none;
-  }
+    nav {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    nav a {
+      text-decoration: none;
+      color: #d63384;
+      background: #fff0f5;
+      padding: 0.6rem 1.2rem;
+      border-radius: 20px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 5px var(--shadow-pink);
+      position: relative;
+      overflow: hidden;
+    }
+    nav a:hover {
+      color: #c71585;
+      transform: scale(1.1);
+      box-shadow: 0 6px 15px rgba(255,182,193,0.6);
+    }
 
-  /* Floating chiikawa sprites */
-  .floating-chiikawa {
-    position: fixed;
-    width: 80px;
-    height: 80px;
-    pointer-events: none;
-    user-select: none;
-    animation: floaty 6s ease-in-out infinite;
-    z-index: 1000;
-  }
-  .floating-chiikawa:nth-child(1) {top: 20%; left: 10%; animation-delay: 0s;}
-  .floating-chiikawa:nth-child(2) {top: 40%; left: 80%; animation-delay: 2s;}
-  .floating-chiikawa:nth-child(3) {top: 70%; left: 30%; animation-delay: 4s;}
-  @keyframes floaty {
-    0%,100% {transform: translateY(0);}
-    50% {transform: translateY(-20px);}
-  }
+    section {
+      max-width: 1100px;
+      margin: 3rem auto;
+      padding: 2rem;
+      background: var(--background-light);
+      border-radius: 20px;
+      box-shadow: 0 8px 20px var(--shadow-pink);
+      position: relative;
+      z-index: 10;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+      gap: 2rem;
+    }
+    .card {
+      background: #fff0f8;
+      border-radius: 20px;
+      padding: 1.5rem;
+      box-shadow: 0 6px 18px var(--shadow-pink);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      text-align: center;
+    }
+    .card img {
+      width: 100%;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      border: 3px solid #ffb6c1;
+    }
 
-  /* Faster floating up images */
-  .floating-up-img {
-    position: fixed;
-    width: 70px;
-    height: 70px;
-    pointer-events: none;
-    user-select: none;
-    will-change: transform;
-    z-index: 1000;
-    filter: drop-shadow(0 0 3px #ffb6c1);
-    border-radius: 12px;
-    opacity: 1 !important; /* fully visible */
-  }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    form input, form textarea {
+      padding: 0.8rem;
+      border-radius: 12px;
+      border: 2px solid #ffd6e8;
+      font-family: var(--font-main);
+      font-size: 1rem;
+    }
 
-  /* Theme toggle button */
-  #themeToggle {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    background: #ffb6c1;
-    border: none;
-    border-radius: 50%;
-    width: 50px; height: 50px;
-    cursor: pointer;
-    box-shadow: 0 6px 15px rgba(255,182,193,0.7);
-    transition: background 0.3s ease, transform 0.3s ease;
-    font-size: 26px;
-    line-height: 1;
-    color: white;
-    user-select: none;
-  }
-  #themeToggle:hover {
-    background: #ff69b4;
-    transform: scale(1.15);
-  }
+    .floating-up-img {
+      position: fixed;
+      width: 70px;
+      height: 70px;
+      pointer-events: none;
+      user-select: none;
+      z-index: 1000;
+      filter: drop-shadow(0 0 3px #ffb6c1);
+      border-radius: 12px;
+    }
 
-  /* Dark theme overrides */
-  body.dark {
-    background: linear-gradient(135deg, #f8c5d0, #f6f0e8, #b7c9fa, #f4c4e1);
-  }
-  body.dark header {
-    background: rgba(40 30 40 / 0.85);
-    box-shadow: 0 4px 12px rgba(255, 105, 180, 0.7);
-    border-bottom-color: #ff69b4;
-  }
-  body.dark header h1 {
-    color: #ffc0de;
-    text-shadow: none;
-  }
-  body.dark nav a {
-    background: #4a2b48;
-    color: #ffb6c1;
-    box-shadow: 0 2px 5px rgba(255,182,193,0.5);
-  }
-  body.dark nav a:hover::after {
-    background: #ff69b4;
-  }
-  body.dark nav a:hover {
-    color: #fff0f5;
-  }
-  body.dark section {
-    background: #5a3e58;
-    box-shadow: 0 8px 20px rgba(255,105,180,0.7);
-    color: #ffd6e8;
-  }
-  body.dark .card {
-    background: #612a52;
-    box-shadow: 0 6px 18px rgba(255,105,180,0.6);
-    color: #ffd6e8;
-  }
-  body.dark .card:hover, body.dark .card:focus {
-    box-shadow: 0 16px 40px rgba(255,105,180,0.9);
-  }
-  body.dark form input, body.dark form textarea {
-    background: #7d4c76;
-    border-color: #ff69b4;
-    color: #ffd6e8;
-  }
-  body.dark form input::placeholder, body.dark form textarea::placeholder {
-    color: #ffc0de;
-  }
-  body.dark form button {
-    background: #ff69b4;
-    box-shadow: 0 6px 18px rgba(255,105,180,0.8);
-  }
-  body.dark footer {
-    color: #ffb6c1;
-  }
-</style>
+    #themeToggle {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #ffb6c1;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 26px;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
 
@@ -334,21 +186,16 @@
   </nav>
 </header>
 
-<!-- Floating Chiikawas -->
-<img src="sitchii.jpg" alt="floating sit chiikawa" class="floating-chiikawa" />
-<img src="chiikawahug.jpg" alt="floating chiikawa hug" class="floating-chiikawa" />
-<img src="chiikawa.jpg" alt="floating chiikawa" class="floating-chiikawa" />
-
 <section id="about">
   <h2>💗 who’s in dreamland?</h2>
   <div class="card-grid">
-    <div class="card" tabindex="0" aria-label="Chiikawa hug card">
-      <img src="chiikawahug.jpg" alt="chiikawa hug" />
+    <div class="card">
+      <img src="https://i.pinimg.com/474x/f5/4c/a0/f54ca0532b9aacccedd9b2314e4283bc.jpg" alt="chiikawa hug">
       <h3>chiikawa hug</h3>
       <p>the sweetest hug ever! full of love and fluff 💖</p>
     </div>
-    <div class="card" tabindex="0" aria-label="Chiikawa portrait card">
-      <img src="chiikawa.jpg" alt="chiikawa portrait" />
+    <div class="card">
+      <img src="https://i.pinimg.com/736x/3d/82/ee/3d82eecfb0cdd2024515e2a326aa2535.jpg" alt="chiikawa">
       <h3>chiikawa</h3>
       <p>the cutest little fluff with big hopes and warm heart 🌸</p>
     </div>
@@ -358,25 +205,25 @@
 <section id="gallery">
   <h2>🌈 chiikawa gallery</h2>
   <div class="card-grid">
-    <div class="card" tabindex="0" aria-label="Hachiware card">
-      <img src="hachiware.jpg" alt="hachiware chiikawa" />
+    <div class="card">
+      <img src="https://i.pinimg.com/736x/6a/1c/e9/6a1ce9ce3d1a90e67ab13800e597c716.jpg" alt="hachiware">
       <h3>hachiware</h3>
-      <p>the cheeky friend with a heart full of mischief and charm 💫</p>
+      <p>cheeky friend full of giggles and glitter 🎀</p>
     </div>
-    <div class="card" tabindex="0" aria-label="Usagi card">
-      <img src="usagi.jpg" alt="usagi chiikawa" />
+    <div class="card">
+      <img src="https://i.pinimg.com/736x/9a/42/0b/9a420bbfcfe449f8b9423569ce3be741.jpg" alt="usagi">
       <h3>usagi</h3>
-      <p>the fluffy bunny who loves to hop and bring smiles 🐇✨</p>
+      <p>bouncy bunny who brings the party 🎉🐰</p>
     </div>
   </div>
 </section>
 
 <section id="contact">
   <h2>💌 send chiikawa a message!</h2>
-  <form id="contactForm" aria-label="Contact form">
-    <input type="text" placeholder="your name" name="name" required aria-required="true" />
-    <input type="email" placeholder="your email" name="email" required aria-required="true" />
-    <textarea placeholder="your message" name="message" rows="4" required aria-required="true"></textarea>
+  <form id="contactForm">
+    <input type="text" placeholder="your name" name="name" required />
+    <input type="email" placeholder="your email" name="email" required />
+    <textarea placeholder="your message" name="message" rows="4" required></textarea>
     <button type="submit">send 💖</button>
   </form>
 </section>
@@ -385,77 +232,63 @@
   🐭 made with mochi crumbs and hugs by hadidi ✧･ﾟ: * chiikawa forever *:･ﾟ✧
 </footer>
 
-<button id="themeToggle" aria-label="toggle theme" title="toggle light/dark theme">🌙</button>
+<button id="themeToggle" title="toggle light/dark theme">🌙</button>
 
 <script>
-  // scroll progress bar
+  // progress bar
   const progressBar = document.getElementById('progressBar');
   window.addEventListener('scroll', () => {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const scrollTop = window.scrollY;
     const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const scrollPercent = (scrollTop / scrollHeight) * 100;
-    progressBar.style.width = scrollPercent + '%';
+    progressBar.style.width = (scrollTop / scrollHeight) * 100 + '%';
   });
 
-  // fade in sections on scroll
-  const sections = document.querySelectorAll('section');
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if(entry.isIntersecting){
-        entry.target.classList.add('visible');
+  // fade-in sections
+  document.querySelectorAll('section').forEach(section => {
+    const observer = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        section.classList.add('visible');
       }
-    });
-  }, {threshold: 0.1});
-  sections.forEach(section => observer.observe(section));
+    }, { threshold: 0.1 });
+    observer.observe(section);
+  });
 
-  // floating images that spawn at random bottom positions and float up fast, fully visible
-  const floatingImages = ['chiikawa.jpg', 'usagi.jpg', 'hachiware2.jpg'];
-
-  function createFloatingImg() {
+  // floating images
+  const floatImgs = [
+    'https://i.pinimg.com/736x/3d/82/ee/3d82eecfb0cdd2024515e2a326aa2535.jpg',
+    'https://i.pinimg.com/736x/9a/42/0b/9a420bbfcfe449f8b9423569ce3be741.jpg',
+    'https://i.pinimg.com/736x/1c/c5/ab/1cc5ab358bdd8552bc5603c3b72e269c.jpg'
+  ];
+  function floatCuties() {
     const img = document.createElement('img');
-    img.src = floatingImages[Math.floor(Math.random() * floatingImages.length)];
-    img.alt = 'floating chiikawa character';
-    img.classList.add('floating-up-img');
-
-    // random horizontal start between 0% and 95% for full width coverage
-    img.style.left = (Math.random() * 95) + 'vw';
-    img.style.bottom = '-80px'; // start just below viewport
-
+    img.src = floatImgs[Math.floor(Math.random() * floatImgs.length)];
+    img.className = 'floating-up-img';
+    img.style.left = Math.random() * 100 + 'vw';
+    img.style.bottom = '-100px';
     document.body.appendChild(img);
-
-    // Animate upwards and remove after animation (fast speed)
     img.animate([
-      { transform: 'translateY(0)', opacity: 1 },
-      { transform: 'translateY(-110vh)', opacity: 1 } /* no fade */
+      { transform: 'translateY(0)' },
+      { transform: 'translateY(-120vh)' }
     ], {
-      duration: 5000 + Math.random() * 2000, // 5-7 seconds (faster)
+      duration: 4000 + Math.random() * 1000,
       easing: 'linear'
     }).onfinish = () => img.remove();
   }
+  setInterval(floatCuties, 300);
 
-  // spawn a new floating image every 400ms for maximum cuteness!
-  setInterval(createFloatingImg, 400);
-
-  // theme toggle button logic
-  const themeToggle = document.getElementById('themeToggle');
-  themeToggle.addEventListener('click', () => {
+  // theme toggle
+  document.getElementById('themeToggle').addEventListener('click', () => {
     document.body.classList.toggle('dark');
-    if(document.body.classList.contains('dark')){
-      themeToggle.textContent = '☀️';
-    } else {
-      themeToggle.textContent = '🌙';
-    }
+    document.getElementById('themeToggle').textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
   });
 
-  // form submit dummy handler with cute alert
-  const form = document.getElementById('contactForm');
-  form.addEventListener('submit', e => {
+  // form
+  document.getElementById('contactForm').addEventListener('submit', e => {
     e.preventDefault();
     alert('thank you for sending love! 💖');
-    form.reset();
+    e.target.reset();
   });
 </script>
 
 </body>
 </html>
-
