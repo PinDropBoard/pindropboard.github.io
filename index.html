@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -133,6 +135,8 @@
     }
 
     form {
+      text-align: center;
+
       display: flex;
       flex-direction: column;
       gap: 1rem;
@@ -140,6 +144,9 @@
       margin: 0 auto;
     }
     form input, form textarea {
+      background: #fff0f8;
+      box-shadow: 0 4px 8px var(--shadow-pink);
+    
       padding: 0.8rem;
       border-radius: 12px;
       border: 2px solid #ffd6e8;
@@ -187,7 +194,7 @@
 </header>
 
 <section id="about">
-  <h2>💗 who’s in dreamland?</h2>
+  <h2 style="text-align:center;">🌟 our sweetest little stars 🌟</h2>
   <div class="card-grid">
     <div class="card">
       <img src="https://i.pinimg.com/474x/f5/4c/a0/f54ca0532b9aacccedd9b2314e4283bc.jpg" alt="chiikawa hug">
@@ -195,7 +202,7 @@
       <p>the sweetest hug ever! full of love and fluff 💖</p>
     </div>
     <div class="card">
-      <img src="https://i.pinimg.com/736x/3d/82/ee/3d82eecfb0cdd2024515e2a326aa2535.jpg" alt="chiikawa">
+      <img src="https://i.pinimg.com/736x/c5/45/b6/c545b6b491622b10f0b51937a128c84c.jpg" alt="chiikawa">
       <h3>chiikawa</h3>
       <p>the cutest little fluff with big hopes and warm heart 🌸</p>
     </div>
@@ -211,7 +218,7 @@
       <p>cheeky friend full of giggles and glitter 🎀</p>
     </div>
     <div class="card">
-      <img src="https://i.pinimg.com/736x/9a/42/0b/9a420bbfcfe449f8b9423569ce3be741.jpg" alt="usagi">
+      <img src="https://i.pinimg.com/736x/03/71/15/037115114426adef9e7fe7bf67523e79.jpg" alt="usagi">
       <h3>usagi</h3>
       <p>bouncy bunny who brings the party 🎉🐰</p>
     </div>
@@ -224,11 +231,21 @@
     <input type="text" placeholder="your name" name="name" required />
     <input type="email" placeholder="your email" name="email" required />
     <textarea placeholder="your message" name="message" rows="4" required></textarea>
-    <button type="submit">send 💖</button>
+    <button type="submit" style="
+      background: #ffb6c1;
+      color: white;
+      padding: 0.8rem 2rem;
+      border-radius: 25px;
+      font-size: 1.2rem;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 6px 12px rgba(255,182,193,0.7);
+      transition: all 0.3s ease;
+    ">send 💖</button>
   </form>
 </section>
 
-<footer>
+<footer style="text-align:center;">
   🐭 made with mochi crumbs and hugs by hadidi ✧･ﾟ: * chiikawa forever *:･ﾟ✧
 </footer>
 
@@ -255,8 +272,8 @@
 
   // floating images
   const floatImgs = [
-    'https://i.pinimg.com/736x/3d/82/ee/3d82eecfb0cdd2024515e2a326aa2535.jpg',
-    'https://i.pinimg.com/736x/9a/42/0b/9a420bbfcfe449f8b9423569ce3be741.jpg',
+    'https://i.pinimg.com/736x/c5/45/b6/c545b6b491622b10f0b51937a128c84c.jpg',
+    'https://i.pinimg.com/736x/03/71/15/037115114426adef9e7fe7bf67523e79.jpg',
     'https://i.pinimg.com/736x/1c/c5/ab/1cc5ab358bdd8552bc5603c3b72e269c.jpg'
   ];
   function floatCuties() {
