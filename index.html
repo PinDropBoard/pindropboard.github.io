@@ -222,16 +222,18 @@
 <header>
   <h1>🐰 welcome to chiikawa dreamland! 🌟</h1>
   <nav>
-    <a href="#about">about</a>
+    <a href="#description">about</a>
     <a href="#stars">stars</a>
     <a href="#contact">contact</a>
   </nav>
 </header>
 
 <section id="about">
-  <h2>🌈 about chiikawa dreamland 🌈</h2>
-  <div class="description-text">
-    welcome to the most magical corner of the internet where cuteness meets pure joy! ✨ this dreamy space is dedicated to celebrating the adorable world of chiikawa and friends. here you'll discover the sweetest characters that fill our hearts with mochi-soft happiness and sparkly giggles. each little friend brings their own special magic to this kawaii universe! 🌟💖
+  <div id="description">
+    <h2>🌈 about chiikawa dreamland 🌈</h2>
+    <div class="description-text">
+      welcome to the most magical corner of the internet where cuteness meets pure joy! ✨ this dreamy space is dedicated to celebrating the adorable world of chiikawa and friends. here you'll discover the sweetest characters that fill our hearts with mochi-soft happiness and sparkly giggles. each little friend brings their own special magic to this kawaii universe! 🌟💖
+    </div>
   </div>
 </section>
 
@@ -342,7 +344,13 @@
   let audio = audioTracks[currentTrack];
   audio.loop = false;
   audio.volume = 0.5;
-  audio.play();
+
+  // Auto-play music when page loads
+  window.addEventListener('load', () => {
+    audio.play().catch(e => {
+      console.log('Auto-play blocked by browser policy');
+    });
+  });
 
   audio.addEventListener('ended', () => {
     currentTrack = (currentTrack + 1) % audioTracks.length;
