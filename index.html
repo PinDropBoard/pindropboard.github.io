@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>✨ chiikawa dreamsite ✨</title>
-  <link rel="icon" href="https://i.pinimg.com/736x/07/33/29/073329087de75dabc08563d0c75cc410.jpg" type="image/webp" />
+  <link rel="icon" href="https://i.pinimg.com/736x/7b/d7/ab/7bd7abb603e35feb41528cb3af4534f1.jpg" type="image/webp" />
 
   <style>
     :root {
@@ -283,23 +283,6 @@
       background: #fff0f8;
       transform: rotateY(180deg);
     }
-    .color-picker {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      margin: 1rem 0;
-    }
-    .color-option {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: 3px solid #ffb6c1;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
-    .color-option:hover {
-      transform: scale(1.1);
-    }
     .quiz-option {
       background: #fff0f8;
       padding: 0.8rem;
@@ -327,6 +310,47 @@
       border-radius: 8px;
       border: 2px solid #ffb6c1;
     }
+    .puzzle-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+      max-width: 300px;
+      margin: 1rem auto;
+    }
+    .puzzle-piece {
+      width: 80px;
+      height: 80px;
+      background-size: 240px 240px;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 2px solid #ffb6c1;
+    }
+    .puzzle-piece.correct {
+      border: 2px solid #90EE90;
+    }
+    .catch-container {
+      position: relative;
+      height: 200px;
+      background: #fff0f8;
+      border-radius: 12px;
+      margin: 1rem 0;
+      overflow: hidden;
+    }
+    .catch-character {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .catch-character img {
+      width: 100%;
+      border-radius: 8px;
+      border: 2px solid #ffb6c1;
+    }
+    .catch-score {
+      margin: 1rem 0;
+    }
   </style>
 </head>
 <body>
@@ -343,7 +367,7 @@
 
 <section id="about">
   <div id="description">
-    <h2>🌈 about chiikawa dreamland 🌈</h2>
+    <h2>✨ about chiikawa dreamland ✨</h2>
     <div class="description-text">
       welcome to the most magical corner of the internet where cuteness meets pure joy! ✨ this dreamy space is dedicated to celebrating the adorable world of chiikawa and friends. here you'll discover the sweetest characters that fill our hearts with soft happiness and sparkly giggles. each little friend brings their own special magic to this kawaii universe! 🌟💖
     </div>
@@ -443,17 +467,10 @@
     </div>
     
     <div class="game-item">
-      <h3>🌈 color chiikawa</h3>
-      <p>choose a color to paint chiikawa! make them as colorful as you want 🎨</p>
-      <div class="color-picker">
-        <div class="color-option" style="background: #ffb6c1" onclick="changeColor('#ffb6c1')"></div>
-        <div class="color-option" style="background: #98fb98" onclick="changeColor('#98fb98')"></div>
-        <div class="color-option" style="background: #87ceeb" onclick="changeColor('#87ceeb')"></div>
-        <div class="color-option" style="background: #dda0dd" onclick="changeColor('#dda0dd')"></div>
-        <div class="color-option" style="background: #f0e68c" onclick="changeColor('#f0e68c')"></div>
-      </div>
-      <div id="colorCanvas" style="font-size: 4rem; text-align: center; cursor: pointer; transition: color 0.3s ease;" onclick="paintChiikawa()">🐰</div>
-      <button class="game-button" onclick="resetColor()">reset color! 🎨</button>
+      <h3>🧩 chiikawa puzzle</h3>
+      <p>arrange the pieces to complete chiikawa's picture! 🖼️</p>
+      <div class="puzzle-container" id="puzzleContainer"></div>
+      <button class="game-button" onclick="startPuzzleGame()">new puzzle! 🧩</button>
     </div>
     
     <div class="game-item">
@@ -482,11 +499,11 @@
     </div>
     
     <div class="game-item">
-      <h3>🎵 chiikawa sounds</h3>
-      <p>listen to the sounds of chiikawa world! each character has their own special sound 🔊</p>
-      <button class="game-button" onclick="playSound('chiikawa')">chiikawa sound! 🐰</button>
-      <button class="game-button" onclick="playSound('hachiware')">hachiware sound! 🐱</button>
-      <button class="game-button" onclick="playSound('usagi')">usagi sound! 🐰</button>
+      <h3>🍬 chiikawa catch</h3>
+      <p>catch falling chiikawa characters by clicking them! 🍬</p>
+      <div class="catch-container" id="catchContainer"></div>
+      <div class="catch-score">caught: <span id="catchScore">0</span></div>
+      <button class="game-button" onclick="startCatchGame()">start catching! 🍬</button>
     </div>
   </div>
 </section>
@@ -536,28 +553,28 @@
   // Floating images
   const floatImgs = [
     "https://i.pinimg.com/736x/9a/42/0b/9a420bbfcfe449f8b9423569ce3be741.jpg",
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQMkte9AqU5oDp8CxZ70ErQxdLuhASdTQPGrjP5-Z2s0CZMfMC",
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:GcSQMkte9AqU5oDp8CxZ70ErQxdLuhASdTQPGrjP5-Z2s0CZMfMC",
     "https://i.pinimg.com/236x/1c/c5/ab/1cc5ab358bdd8552bc5603c3b72e269c.jpg"
   ];
   let floatInterval;
-  
+
   function floatCuties() {
     const img = document.createElement("img");
     img.src = floatImgs[Math.floor(Math.random() * floatImgs.length)];
     img.className = "floating-up-img";
-    img.style.left = Math.random() * 95 + "vw";
-    img.style.bottom = "-100px";
+    img.style.left = Math.random() * 100 + "vw";
+    img.style.top = (Math.random() * 100 + 100) + "vh";
     document.body.appendChild(img);
-    img.animate([{ transform: "translateY(0)" }, { transform: "translateY(-120vh)" }], {
-      duration: 4000 + Math.random() * 1000,
+    img.animate([{ transform: "translateY(0)" }, { transform: "translateY(-200vh)" }], {
+      duration: 4000 + Math.random() * 2000,
       easing: "linear"
     }).onfinish = () => img.remove();
   }
-  
+
   function startFloating() {
-    floatInterval = setInterval(floatCuties, 350);
+    floatInterval = setInterval(floatCuties, 1000);
   }
-  
+
   function stopFloating() {
     clearInterval(floatInterval);
     document.querySelectorAll('.floating-up-img').forEach(img => img.classList.add('hidden'));
@@ -566,7 +583,7 @@
       startFloating();
     }, 5000);
   }
-  
+
   startFloating();
 
   // Music system
@@ -603,10 +620,12 @@
   // Game Functions
   let memoryCards = [];
   let flippedCards = [];
-  let currentColor = '#ffb6c1';
   let clickScore = 0;
   let clickGameActive = false;
   let currentQuestionIndex = 0;
+  let puzzlePieces = [];
+  let catchScore = 0;
+  let catchGameActive = false;
 
   const quizQuestions = [
     {
@@ -631,14 +650,14 @@
     const cards = document.querySelectorAll('.memory-card');
     const emojis = ['🐰', '🐱', '🦦', '🦀', '🐰', '🐱', '🦦', '🦀'];
     const shuffled = emojis.sort(() => Math.random() - 0.5);
-    
+
     cards.forEach((card, index) => {
       card.textContent = '';
       card.classList.remove('flipped');
       card.dataset.card = shuffled[index];
       card.onclick = () => flipCard(card);
     });
-    
+
     flippedCards = [];
   }
 
@@ -647,7 +666,7 @@
       card.classList.add('flipped');
       card.textContent = card.dataset.card;
       flippedCards.push(card);
-      
+
       if (flippedCards.length === 2) {
         setTimeout(() => {
           if (flippedCards[0].dataset.card === flippedCards[1].dataset.card) {
@@ -664,30 +683,69 @@
     }
   }
 
-  // Color Game
-  function changeColor(color) {
-    currentColor = color;
+  // Puzzle Game
+  function startPuzzleGame() {
+    const container = document.getElementById('puzzleContainer');
+    container.innerHTML = '';
+    const correctOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+    const shuffledOrder = correctOrder.sort(() => Math.random() - 0.5);
+    
+    shuffledOrder.forEach((position, index) => {
+      const piece = document.createElement('div');
+      piece.className = 'puzzle-piece';
+      piece.dataset.position = position;
+      piece.dataset.correct = index;
+      piece.style.backgroundImage = 'url(https://i.pinimg.com/736x/11/d2/0f/11d20fb3de158acfeb1a297eb70b6f98.jpg)';
+      piece.style.backgroundPosition = `${-(position % 3) * 80}px ${-Math.floor(position / 3) * 80}px`;
+      piece.onclick = () => swapPuzzlePiece(piece);
+      container.appendChild(piece);
+    });
   }
 
-  function paintChiikawa() {
-    document.getElementById('colorCanvas').style.color = currentColor;
+  function swapPuzzlePiece(piece) {
+    const pieces = document.querySelectorAll('.puzzle-piece');
+    if (puzzlePieces.length < 2) {
+      puzzlePieces.push(piece);
+      piece.style.border = '2px solid #ff69b4';
+      if (puzzlePieces.length === 2) {
+        const pos1 = puzzlePieces[0].dataset.position;
+        const pos2 = puzzlePieces[1].dataset.position;
+        puzzlePieces[0].dataset.position = pos2;
+        puzzlePieces[1].dataset.position = pos1;
+        puzzlePieces[0].style.backgroundPosition = `${-(pos2 % 3) * 80}px ${-Math.floor(pos2 / 3) * 80}px`;
+        puzzlePieces[1].style.backgroundPosition = `${-(pos1 % 3) * 80}px ${-Math.floor(pos1 / 3) * 80}px`;
+        puzzlePieces.forEach(p => p.style.border = '2px solid #ffb6c1');
+        checkPuzzleComplete();
+        puzzlePieces = [];
+      }
+    }
   }
 
-  function resetColor() {
-    document.getElementById('colorCanvas').style.color = '#000';
+  function checkPuzzleComplete() {
+    const pieces = document.querySelectorAll('.puzzle-piece');
+    let isComplete = true;
+    pieces.forEach(piece => {
+      if (piece.dataset.position !== piece.dataset.correct) {
+        isComplete = false;
+      }
+    });
+    if (isComplete) {
+      pieces.forEach(piece => piece.classList.add('correct'));
+      setTimeout(() => alert('Puzzle completed! 🎉'), 500);
+    }
   }
 
   // Quiz Game
   function checkAnswer(option, isCorrect) {
     const options = document.querySelectorAll('.quiz-option');
     options.forEach(opt => opt.style.pointerEvents = 'none');
-    
+
     if (isCorrect) {
       option.classList.add('correct');
     } else {
       option.classList.add('wrong');
     }
-    
+
     setTimeout(() => {
       options.forEach(opt => {
         opt.classList.remove('correct', 'wrong');
@@ -700,7 +758,7 @@
     currentQuestionIndex = (currentQuestionIndex + 1) % quizQuestions.length;
     const question = quizQuestions[currentQuestionIndex];
     document.getElementById('quizQuestion').textContent = question.question;
-    
+
     const options = document.querySelectorAll('.quiz-option');
     options.forEach((option, index) => {
       option.textContent = question.options[index];
@@ -715,7 +773,7 @@
     document.getElementById('clickScore').textContent = clickScore;
     stopFloating();
     moveTarget();
-    
+
     setTimeout(() => {
       clickGameActive = false;
       alert(`Game over! You scored ${clickScore} points! 🎉`);
@@ -724,15 +782,15 @@
 
   function moveTarget() {
     if (!clickGameActive) return;
-    
+
     const target = document.getElementById('clickTarget');
     const container = target.parentElement;
     const maxX = container.offsetWidth - 40;
     const maxY = container.offsetHeight - 40;
-    
+
     target.style.left = Math.random() * maxX + 'px';
     target.style.top = Math.random() * maxY + 'px';
-    
+
     target.onclick = () => {
       if (clickGameActive) {
         clickScore++;
@@ -741,25 +799,57 @@
         moveTarget();
       }
     };
-    
+
     setTimeout(moveTarget, 1000);
   }
 
-  // Sound Game
-  function playSound(character) {
-    const sounds = {
-      'chiikawa': '🐰 chiikawa~',
-      'hachiware': '🐱 nya nya~',
-      'usagi': '🐰 usa usa~'
+  // Catch Game
+  function startCatchGame() {
+    catchScore = 0;
+    catchGameActive = true;
+    document.getElementById('catchScore').textContent = catchScore;
+    document.getElementById('catchContainer').innerHTML = '';
+    spawnCatchCharacter();
+
+    setTimeout(() => {
+      catchGameActive = false;
+      document.querySelectorAll('.catch-character').forEach(char => char.remove());
+      alert(`Game over! You caught ${catchScore} Chiikawas! 🍬`);
+    }, 15000);
+  }
+
+  function spawnCatchCharacter() {
+    if (!catchGameActive) return;
+    const container = document.getElementById('catchContainer');
+    const character = document.createElement('div');
+    character.className = 'catch-character';
+    character.style.left = Math.random() * (container.offsetWidth - 40) + 'px';
+    character.style.top = '-40px';
+    character.innerHTML = '<img src="https://i.pinimg.com/736x/9e/d2/57/9ed25718190fc277a34354760c69a021.jpg" alt="chiikawa" />';
+    container.appendChild(character);
+
+    character.animate([
+      { transform: 'translateY(0)' },
+      { transform: `translateY(${container.offsetHeight + 40}px)` }
+    ], {
+      duration: 3000 + Math.random() * 2000,
+      easing: 'linear'
+    }).onfinish = () => character.remove();
+
+    character.onclick = () => {
+      if (catchGameActive) {
+        catchScore++;
+        document.getElementById('catchScore').textContent = catchScore;
+        character.remove();
+      }
     };
-    
-    alert(sounds[character] || '🎵 kawaii sound!');
+
+    setTimeout(spawnCatchCharacter, 1000);
   }
 
   // Initialize games
   shuffleMemoryGame();
-  
-  // Initialize click target position
+  startPuzzleGame();
   document.getElementById('clickTarget').style.left = '50px';
   document.getElementById('clickTarget').style.top = '50px';
 </script>
