@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>✨ chiikawa dreamsite ✨</title>
-  <link rel="icon" href="https://i.pinimg.com/736x/7b/d7/ab/7bd7abb603e35feb41528cb3af4534f1.jpg" type="image/webp" />
+  <link rel="icon" href="https://i.pinimg.com/736x/7b/d7/ab/7bd7abb603e35feb41528cb3af4534f1.jpg" type="image/jpeg" />
 
   <style>
     :root {
@@ -20,7 +20,9 @@
       --button-hover: #ff69b4;
     }
     * {
-      margin: 0; padding: 0; box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
     body {
       font-family: var(--font-main);
@@ -115,9 +117,17 @@
       border-radius: 16px;
       box-shadow: 0 6px 18px var(--shadow-pink);
       text-align: center;
+      animation: cardPop 0.5s ease-in-out;
+    }
+    @keyframes cardPop {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
     }
     .card img {
       width: 100%;
+      max-width: 300px;
+      display: block;
+      margin: 0 auto;
       border-radius: 12px;
       margin-bottom: 1rem;
       border: 3px solid #ffb6c1;
@@ -157,9 +167,10 @@
       font-size: 0.9rem;
       color: #888;
     }
-    #themeToggle, #volumeBtn {
+    #themeToggle {
       position: fixed;
       bottom: 30px;
+      right: 30px;
       width: 50px;
       height: 50px;
       font-size: 26px;
@@ -167,15 +178,55 @@
       cursor: pointer;
       border-radius: 50%;
       border: none;
-    }
-    #themeToggle {
-      right: 30px;
       background: #ffb6c1;
     }
     #volumeBtn {
-      left: 30px;
-      background: #ffd6e8;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      width: 40px;
+      height: 40px;
+      font-size: 20px;
       color: #c71585;
+      cursor: pointer;
+      border-radius: 50%;
+      border: none;
+      background: #ffd6e8;
+      transition: background 0.3s ease;
+    }
+    #volumeBtn:hover {
+      background: var(--button-hover);
+    }
+    #volumeSlider {
+      position: fixed;
+      top: 25px;
+      left: 70px;
+      width: 100px;
+      height: 30px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: #ffd6e8;
+      border-radius: 15px;
+      outline: none;
+      cursor: pointer;
+    }
+    #volumeSlider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border: 2px solid #ffb6c1;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    #volumeSlider::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      background: white;
+      border: 2px solid #ffb6c1;
+      border-radius: 50%;
+      cursor: pointer;
     }
     .floating-up-img {
       position: fixed;
@@ -199,6 +250,13 @@
       max-width: 700px;
       margin-left: auto;
       margin-right: auto;
+    }
+    .rainbow-text {
+      background: linear-gradient(to right, #ff6b6b, #ff8e53, #ffeb3b, #66ff66, #4facfe, #b267e6);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: bold;
     }
     .stars-button {
       display: block;
@@ -231,6 +289,8 @@
     .gallery-item img {
       width: 100%;
       max-width: 300px;
+      display: block;
+      margin: 0 auto;
       border-radius: 12px;
       border: 3px solid #ffb6c1;
     }
@@ -256,7 +316,12 @@
       font-weight: bold;
       margin-top: 1rem;
     }
-    .game-button:hover {
+    .game-button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    .game-button:hover:enabled {
       background: var(--button-hover);
       box-shadow: 0 8px 25px rgba(255,105,180,0.9);
     }
@@ -282,6 +347,10 @@
     .memory-card.flipped {
       background: #fff0f8;
       transform: rotateY(180deg);
+    }
+    .memory-card.matched {
+      background: #90EE90;
+      cursor: default;
     }
     .quiz-option {
       background: #fff0f8;
@@ -369,7 +438,7 @@
   <div id="description">
     <h2>✨ about chiikawa dreamland ✨</h2>
     <div class="description-text">
-      welcome to the most magical corner of the internet where cuteness meets pure joy! ✨ this dreamy space is dedicated to celebrating the adorable world of chiikawa and friends. here you'll discover the sweetest characters that fill our hearts with soft happiness and sparkly giggles. each little friend brings their own special magic to this kawaii universe! 🌟💖
+      welcome to the most magical corner of the internet where cuteness meets pure joy! ✨ this <span class="rainbow-text">dreamy</span> space is dedicated to celebrating the adorable world of chiikawa and friends. here you'll discover the sweetest characters that fill our hearts with soft happiness and sparkly giggles. each little friend brings their own special magic to this kawaii universe! 🌟💖
     </div>
   </div>
 </section>
@@ -385,7 +454,7 @@
     <div class="card">
       <img src="https://i.pinimg.com/736x/6a/1c/e9/6a1ce9ce3d1a90e67ab13800e597c716.jpg" alt="hachiware" />
       <h3>hachiware</h3>
-      <p>cheeky friend full of giggles and glitter 🎀</p>
+      <p>silly friend full of giggles and glitter 🎀</p>
     </div>
     <div class="card">
       <img src="https://i.pinimg.com/736x/03/71/15/037115114426adef9e7fe7bf67523e79.jpg" alt="usagi" />
@@ -393,7 +462,12 @@
       <p>bouncy bunny who brings the party 🎉🐰</p>
     </div>
     <div class="card">
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSX6PrZc7qff3HTac7k-vtWPsZAql02Zf8Hw-s_9SYqFTdYGUs_QiLnYoM6XSqc760QRwk&usqp=CAU" alt="rakko" />
+      <img src="https://i.pinimg.com/736x/52/7b/de/527bde1287250b840f4f40e7a885e426.jpg" alt="momonga" />
+      <h3>momonga</h3>
+      <p>cheeky squirrel who always wants attention 🐿️</p>
+    </div>
+    <div class="card">
+      <img src="https://i.pinimg.com/736x/9a/42/0b/9a420bbfcfe449f8b9423569ce3be741.jpg" alt="rakko" />
       <h3>rakko</h3>
       <p>relaxed otter with stylish vibes and floaties 🦦🌊</p>
     </div>
@@ -432,12 +506,12 @@
       <p>the gang hanging out together</p>
     </div>
     <div class="gallery-item">
-      <img src="https://i.pinimg.com/736x/d0/e7/0b/d0e70b0d713930a7c9f688468a5044ea.jpg" alt="chiikawa with the president" />
-      <h4>chiikawa and the president 👱‍♂️</h4>
-      <p>chiikawa being held by donald trump</p>
+      <img src="https://i.pinimg.com/736x/28/de/fd/28defddafeefbe7e8b61c5799744c0a5.jpg" alt="chiikawa adventure" />
+      <h4>chiikawa adventure 🌟</h4>
+      <p>chiikawa exploring a magical world</p>
     </div>
     <div class="gallery-item">
-      <img src="https://cdn.kalebooster.com/ug/static/kaleArticle/659217/0422359f1102f1652ad02ebd5e1d0a4d.png" alt="chiikawa cooking" />
+      <img src="https://i.pinimg.com/736x/11/d2/0f/11d20fb3de158acfeb1a297eb70b6f98.jpg" alt="chiikawa cooking" />
       <h4>chef chiikawa 👨‍🍳</h4>
       <p>making the cutest little treats</p>
     </div>
@@ -477,13 +551,13 @@
       <h3>❓ chiikawa quiz</h3>
       <p>test your knowledge about chiikawa and friends! 🧭</p>
       <div id="quizContainer">
-        <div id="quizQuestion">what sound does chiikawa make?</div>
-        <div class="quiz-option" onclick="checkAnswer(this, false)">woof woof!</div>
-        <div class="quiz-option" onclick="checkAnswer(this, false)">meow meow!</div>
-        <div class="quiz-option" onclick="checkAnswer(this, true)">iya!</div>
-        <div class="quiz-option" onclick="checkAnswer(this, false)">ribbit ribbit!</div>
+        <div id="quizQuestion">What sound does Chiikawa make?</div>
+        <div class="quiz-option" data-index="0">woof woof!</div>
+        <div class="quiz-option" data-index="1">meow meow!</div>
+        <div class="quiz-option" data-index="2">iya!</div>
+        <div class="quiz-option" data-index="3">ribbit ribbit!</div>
       </div>
-      <button class="game-button" onclick="nextQuestion()">next question! ❓</button>
+      <button class="game-button" id="nextQuestionBtn" onclick="nextQuestion()" disabled>next question! ❓</button>
     </div>
     
     <div class="game-item">
@@ -524,6 +598,7 @@
 
 <button id="themeToggle" title="toggle theme">🌙</button>
 <button id="volumeBtn" title="toggle music">🎵</button>
+<input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
 
 <script>
   // Intersection Observer for animations
@@ -553,7 +628,7 @@
   // Floating images
   const floatImgs = [
     "https://i.pinimg.com/736x/9a/42/0b/9a420bbfcfe449f8b9423569ce3be741.jpg",
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:GcSQMkte9AqU5oDp8CxZ70ErQxdLuhASdTQPGrjP5-Z2s0CZMfMC",
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQMkte9AqU5oDp8CxZ70ErQxdLuhASdTQPGrjP5-Z2s0CZMfMC",
     "https://i.pinimg.com/236x/1c/c5/ab/1cc5ab358bdd8552bc5603c3b72e269c.jpg"
   ];
   let floatInterval;
@@ -605,16 +680,25 @@
   audio.addEventListener('ended', () => {
     currentTrack = (currentTrack + 1) % audioTracks.length;
     audio = audioTracks[currentTrack];
-    audio.volume = 0.5;
+    audio.volume = document.getElementById('volumeSlider').value;
     audio.play();
   });
 
   document.getElementById('volumeBtn').addEventListener('click', () => {
-    if (audio.paused) {
-      audio.play();
+    if (audio.muted) {
+      audio.muted = false;
+      document.getElementById('volumeBtn').textContent = '🎵';
+      document.getElementById('volumeSlider').value = audio.volume;
     } else {
-      audio.pause();
+      audio.muted = true;
+      document.getElementById('volumeBtn').textContent = '🔇';
     }
+  });
+
+  document.getElementById('volumeSlider').addEventListener('input', () => {
+    audio.volume = document.getElementById('volumeSlider').value;
+    audio.muted = false;
+    document.getElementById('volumeBtn').textContent = '🎵';
   });
 
   // Game Functions
@@ -628,20 +712,58 @@
   let catchGameActive = false;
 
   const quizQuestions = [
+    // Easy
     {
-      question: "what sound does chiikawa make?",
-      options: ["woof woof!", "meow meow!", "chiikawa!", "ribbit ribbit!"],
+      question: "What sound does Chiikawa make?",
+      options: ["woof woof!", "meow meow!", "iya!", "ribbit ribbit!"],
       correct: 2
     },
     {
-      question: "what color is hachiware?",
-      options: ["pink", "black and white", "blue", "yellow"],
+      question: "What color is Hachiware?",
+      options: ["pink", "blue and white", "blue", "yellow"],
       correct: 1
     },
     {
-      question: "what animal is usagi?",
+      question: "What animal is Usagi?",
       options: ["cat", "dog", "rabbit", "bear"],
       correct: 2
+    },
+    // Medium
+    {
+      question: "What is Hachiware known for loving?",
+      options: ["ramen", "singing", "napping", "dancing"],
+      correct: 1
+    },
+    {
+      question: "Who is Chiikawa's best friend?",
+      options: ["Usagi", "Kani", "Hachiware", "Momonga"],
+      correct: 2
+    },
+    {
+      question: "What does Kuri Manjū resemble?",
+      options: ["a crab", "a chestnut bun", "a lion", "an otter"],
+      correct: 1
+    },
+    {
+      question: "What is Shisa's favorite food?",
+      options: ["sushi", "ramen", "cake", "pizza"],
+      correct: 1
+    },
+    // Hard
+    {
+      question: "In which year was the Chiikawa manga first published?",
+      options: ["2018", "2020", "2022", "2016"],
+      correct: 1
+    },
+    {
+      question: "Which studio produces the Chiikawa anime?",
+      options: ["Studio Ghibli", "Doga Kobo", "Toei Animation", "MAPPA"],
+      correct: 1
+    },
+    {
+      question: "What is the name of the forest where Chiikawa and friends live?",
+      options: ["Kawaii Forest", "Chiikawa Forest", "Happy Woods", "Glitter Grove"],
+      correct: 1
     }
   ];
 
@@ -650,36 +772,54 @@
     const cards = document.querySelectorAll('.memory-card');
     const emojis = ['🐰', '🐱', '🦦', '🦀', '🐰', '🐱', '🦦', '🦀'];
     const shuffled = emojis.sort(() => Math.random() - 0.5);
+    memoryCards = [];
+    flippedCards = [];
 
     cards.forEach((card, index) => {
       card.textContent = '';
-      card.classList.remove('flipped');
+      card.classList.remove('flipped', 'matched');
       card.dataset.card = shuffled[index];
-      card.onclick = () => flipCard(card);
+      card.style.pointerEvents = 'auto';
+      card.removeEventListener('click', flipCard);
+      card.addEventListener('click', () => flipCard(card));
+      memoryCards.push(card);
     });
-
-    flippedCards = [];
   }
 
   function flipCard(card) {
-    if (flippedCards.length < 2 && !card.classList.contains('flipped')) {
-      card.classList.add('flipped');
-      card.textContent = card.dataset.card;
-      flippedCards.push(card);
+    if (flippedCards.length >= 2 || card.classList.contains('flipped') || card.classList.contains('matched')) {
+      return;
+    }
 
-      if (flippedCards.length === 2) {
+    card.classList.add('flipped');
+    card.textContent = card.dataset.card;
+    flippedCards.push(card);
+
+    if (flippedCards.length === 2) {
+      const [card1, card2] = flippedCards;
+      if (card1.dataset.card === card2.dataset.card) {
+        card1.classList.add('matched');
+        card2.classList.add('matched');
+        card1.style.pointerEvents = 'none';
+        card2.style.pointerEvents = 'none';
+        flippedCards = [];
+        checkMemoryGameComplete();
+      } else {
         setTimeout(() => {
-          if (flippedCards[0].dataset.card === flippedCards[1].dataset.card) {
-            flippedCards = [];
-          } else {
-            flippedCards.forEach(c => {
-              c.classList.remove('flipped');
-              c.textContent = '';
-            });
-            flippedCards = [];
-          }
+          card1.classList.remove('flipped');
+          card2.classList.remove('flipped');
+          card1.textContent = '';
+          card2.textContent = '';
+          flippedCards = [];
         }, 1000);
       }
+    }
+  }
+
+  function checkMemoryGameComplete() {
+    const allMatched = Array.from(document.querySelectorAll('.memory-card')).every(card => card.classList.contains('matched'));
+    if (allMatched) {
+      setTimeout(() => alert('Memory game completed! 🎉'), 500);
     }
   }
 
@@ -688,8 +828,9 @@
     const container = document.getElementById('puzzleContainer');
     container.innerHTML = '';
     const correctOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-    const shuffledOrder = correctOrder.sort(() => Math.random() - 0.5);
-    
+    const shuffledOrder = [...correctOrder].sort(() => Math.random() - 0.5);
+    puzzlePieces = [];
+
     shuffledOrder.forEach((position, index) => {
       const piece = document.createElement('div');
       piece.className = 'puzzle-piece';
@@ -697,27 +838,26 @@
       piece.dataset.correct = index;
       piece.style.backgroundImage = 'url(https://i.pinimg.com/736x/11/d2/0f/11d20fb3de158acfeb1a297eb70b6f98.jpg)';
       piece.style.backgroundPosition = `${-(position % 3) * 80}px ${-Math.floor(position / 3) * 80}px`;
-      piece.onclick = () => swapPuzzlePiece(piece);
+      piece.addEventListener('click', () => swapPuzzlePiece(piece));
       container.appendChild(piece);
+      puzzlePieces.push(piece);
     });
   }
 
   function swapPuzzlePiece(piece) {
-    const pieces = document.querySelectorAll('.puzzle-piece');
-    if (puzzlePieces.length < 2) {
-      puzzlePieces.push(piece);
-      piece.style.border = '2px solid #ff69b4';
-      if (puzzlePieces.length === 2) {
-        const pos1 = puzzlePieces[0].dataset.position;
-        const pos2 = puzzlePieces[1].dataset.position;
-        puzzlePieces[0].dataset.position = pos2;
-        puzzlePieces[1].dataset.position = pos1;
-        puzzlePieces[0].style.backgroundPosition = `${-(pos2 % 3) * 80}px ${-Math.floor(pos2 / 3) * 80}px`;
-        puzzlePieces[1].style.backgroundPosition = `${-(pos1 % 3) * 80}px ${-Math.floor(pos1 / 3) * 80}px`;
-        puzzlePieces.forEach(p => p.style.border = '2px solid #ffb6c1');
-        checkPuzzleComplete();
-        puzzlePieces = [];
-      }
+    if (puzzlePieces.includes(piece)) return;
+    puzzlePieces.push(piece);
+    piece.style.border = '2px solid #ff69b4';
+    if (puzzlePieces.length === 2) {
+      const pos1 = puzzlePieces[0].dataset.position;
+      const pos2 = puzzlePieces[1].dataset.position;
+      puzzlePieces[0].dataset.position = pos2;
+      puzzlePieces[1].dataset.position = pos1;
+      puzzlePieces[0].style.backgroundPosition = `${-(pos2 % 3) * 80}px ${-Math.floor(pos2 / 3) * 80}px`;
+      puzzlePieces[1].style.backgroundPosition = `${-(pos1 % 3) * 80}px ${-Math.floor(pos1 / 3) * 80}px`;
+      puzzlePieces.forEach(p => p.style.border = '2px solid #ffb6c1');
+      checkPuzzleComplete();
+      puzzlePieces = [];
     }
   }
 
@@ -736,12 +876,16 @@
   }
 
   // Quiz Game
-  function checkAnswer(option, isCorrect) {
+  function checkAnswer(option) {
     const options = document.querySelectorAll('.quiz-option');
+    const selectedIndex = parseInt(option.dataset.index);
+    const correctIndex = quizQuestions[currentQuestionIndex].correct;
+
     options.forEach(opt => opt.style.pointerEvents = 'none');
 
-    if (isCorrect) {
+    if (selectedIndex === correctIndex) {
       option.classList.add('correct');
+      document.getElementById('nextQuestionBtn').disabled = false;
     } else {
       option.classList.add('wrong');
     }
@@ -762,8 +906,11 @@
     const options = document.querySelectorAll('.quiz-option');
     options.forEach((option, index) => {
       option.textContent = question.options[index];
-      option.onclick = () => checkAnswer(option, index === question.correct);
+      option.dataset.index = index;
+      option.removeEventListener('click', checkAnswer);
+      option.addEventListener('click', () => checkAnswer(option));
     });
+    document.getElementById('nextQuestionBtn').disabled = true;
   }
 
   // Click Game
@@ -772,11 +919,15 @@
     clickGameActive = true;
     document.getElementById('clickScore').textContent = clickScore;
     stopFloating();
+    const target = document.getElementById('clickTarget');
+    target.style.display = 'block';
     moveTarget();
 
     setTimeout(() => {
       clickGameActive = false;
+      target.style.display = 'none';
       alert(`Game over! You scored ${clickScore} points! 🎉`);
+      startFloating();
     }, 15000);
   }
 
@@ -809,12 +960,14 @@
     catchGameActive = true;
     document.getElementById('catchScore').textContent = catchScore;
     document.getElementById('catchContainer').innerHTML = '';
+    stopFloating();
     spawnCatchCharacter();
 
     setTimeout(() => {
       catchGameActive = false;
       document.querySelectorAll('.catch-character').forEach(char => char.remove());
       alert(`Game over! You caught ${catchScore} Chiikawas! 🍬`);
+      startFloating();
     }, 15000);
   }
 
@@ -836,13 +989,13 @@
       easing: 'linear'
     }).onfinish = () => character.remove();
 
-    character.onclick = () => {
+    character.addEventListener('click', () => {
       if (catchGameActive) {
         catchScore++;
         document.getElementById('catchScore').textContent = catchScore;
         character.remove();
       }
-    };
+    });
 
     setTimeout(spawnCatchCharacter, 1000);
   }
@@ -852,6 +1005,16 @@
   startPuzzleGame();
   document.getElementById('clickTarget').style.left = '50px';
   document.getElementById('clickTarget').style.top = '50px';
+
+  // Initialize quiz with correct options
+  const initialQuestion = quizQuestions[0];
+  document.getElementById('quizQuestion').textContent = initialQuestion.question;
+  const quizOptions = document.querySelectorAll('.quiz-option');
+  quizOptions.forEach((option, index) => {
+    option.textContent = initialQuestion.options[index];
+    option.dataset.index = index;
+    option.addEventListener('click', () => checkAnswer(option));
+  });
 </script>
 </body>
 </html>
