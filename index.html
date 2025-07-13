@@ -53,6 +53,9 @@
       padding: 1.2rem 1rem;
       border-bottom: 2px solid #ffb6c1;
       z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     header h1 {
       font-size: 2.2rem;
@@ -180,10 +183,7 @@
       border: none;
       background: #ffb6c1;
     }
-    #volumeBtn {
-      position: fixed;
-      top: 20px;
-      left: 20px;
+    #muteBtn, #pauseBtn {
       width: 40px;
       height: 40px;
       font-size: 20px;
@@ -193,14 +193,12 @@
       border: none;
       background: #ffd6e8;
       transition: background 0.3s ease;
+      margin-right: 10px;
     }
-    #volumeBtn:hover {
+    #muteBtn:hover, #pauseBtn:hover {
       background: var(--button-hover);
     }
     #volumeSlider {
-      position: fixed;
-      top: 25px;
-      left: 70px;
       width: 100px;
       height: 30px;
       -webkit-appearance: none;
@@ -209,24 +207,29 @@
       border-radius: 15px;
       outline: none;
       cursor: pointer;
+      vertical-align: middle;
     }
     #volumeSlider::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
       width: 20px;
       height: 20px;
-      background: white;
-      border: 2px solid #ffb6c1;
+      background: url('https://i.pinimg.com/736x/2f/a6/38/2fa63889fb076947de294c8348e836bf.jpg') no-repeat center;
+      background-size: cover;
       border-radius: 50%;
       cursor: pointer;
     }
     #volumeSlider::-moz-range-thumb {
       width: 20px;
       height: 20px;
-      background: white;
-      border: 2px solid #ffb6c1;
+      background: url('https://i.pinimg.com/736x/2f/a6/38/2fa63889fb076947de294c8348e836bf.jpg') no-repeat center;
+      background-size: cover;
       border-radius: 50%;
       cursor: pointer;
+    }
+    .controls {
+      display: flex;
+      align-items: center;
     }
     .floating-up-img {
       position: fixed;
@@ -424,6 +427,11 @@
 </head>
 <body>
 <header>
+  <div class="controls">
+    <button id="muteBtn" title="mute music">🔇</button>
+    <button id="pauseBtn" title="pause music">⏸️</button>
+    <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
+  </div>
   <h1>🌟 welcome to chiikawa dreamland! 🌟</h1>
   <nav>
     <a href="#description">about</a>
@@ -597,8 +605,6 @@
 </footer>
 
 <button id="themeToggle" title="toggle theme">🌙</button>
-<button id="volumeBtn" title="toggle music">🎵</button>
-<input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
 
 <script>
   // Intersection Observer for animations
@@ -684,21 +690,31 @@
     audio.play();
   });
 
-  document.getElementById('volumeBtn').addEventListener('click', () => {
+  document.getElementById('muteBtn').addEventListener('click', () => {
     if (audio.muted) {
       audio.muted = false;
-      document.getElementById('volumeBtn').textContent = '🎵';
+      document.getElementById('muteBtn').textContent = '🔊';
       document.getElementById('volumeSlider').value = audio.volume;
     } else {
       audio.muted = true;
-      document.getElementById('volumeBtn').textContent = '🔇';
+      document.getElementById('muteBtn').textContent = '🔇';
+    }
+  });
+
+  document.getElementById('pauseBtn').addEventListener('click', () => {
+    if (audio.paused) {
+      audio.play();
+      document.getElementById('pauseBtn').textContent = '⏸️';
+    } else {
+      audio.pause();
+      document.getElementById('pauseBtn').textContent = '▶️';
     }
   });
 
   document.getElementById('volumeSlider').addEventListener('input', () => {
     audio.volume = document.getElementById('volumeSlider').value;
     audio.muted = false;
-    document.getElementById('volumeBtn').textContent = '🎵';
+    document.getElementById('muteBtn').textContent = '🔊';
   });
 
   // Game Functions
