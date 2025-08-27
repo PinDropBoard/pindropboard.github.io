@@ -3,248 +3,631 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Whack-a-Mole</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
-    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/394/394790.png" type="image/png" />
+    <title>Tetris</title>
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/566/566312.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
+        /* --- Basic Setup & Retro Theming --- */
+        :root {
+            --bg-color: #0d0d0d;
+            --grid-bg: #1a1a1a;
+            --grid-line: #333;
+            --text-color: #f0f0f0;
+            --accent-color: #ff00ff; /* Magenta */
+            --button-bg: #00ffff; /* Cyan */
+            --button-text: #0d0d0d;
+            --modal-bg: rgba(0, 0, 0, 0.85);
+            --font-family: 'Press Start 2P', cursive;
+        }
+
+        html {
+            box-sizing: border-box;
+        }
+        *, *:before, *:after {
+            box-sizing: inherit;
+        }
+
         body {
-            /* Applied the new round font */
-            font-family: 'Fredoka One', cursive;
-            touch-action: manipulation; /* Prevents double-tap zoom on mobile */
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-family);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
-        .game-grid {
-            display: grid;
+
+        /* --- Main Game Layout --- */
+        .game-container {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        /* --- Game Canvas --- */
+        #game-board {
+            border: 4px solid var(--accent-color);
+            background-color: var(--grid-bg);
+            box-shadow: 0 0 20px var(--accent-color);
+            image-rendering: pixelated; /* Sharp pixels for retro look */
+        }
+
+        /* --- Sidebar for Stats & Controls --- */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            width: 200px;
+            text-align: center;
+        }
+
+        .stat-box {
+            background-color: var(--grid-bg);
+            padding: 1rem;
+            border: 2px solid var(--grid-line);
+        }
+
+        .stat-box h2 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1rem;
+            color: var(--accent-color);
+        }
+
+        .stat-box p {
+            margin: 0;
+            font-size: 1.5rem;
+            color: var(--text-color);
+        }
+
+        #next-piece-canvas {
+            background-color: var(--grid-bg);
+            border: 2px solid var(--grid-line);
+            width: 100%;
+            height: auto;
+            image-rendering: pixelated;
+        }
+        
+        /* --- Buttons & Modals --- */
+        .button {
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            padding: 1rem;
+            font-family: inherit;
+            font-size: 1rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+            box-shadow: 4px 4px 0px #00a1a1;
+        }
+
+        .button:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #00a1a1;
+        }
+        
+        .button:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0px #00a1a1;
+        }
+
+        /* Hide the initial start button */
+        #start-button {
+            display: none;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--modal-bg);
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .modal-content {
+            padding: 2rem 3rem;
+            background-color: var(--grid-bg);
+            border: 4px solid var(--accent-color);
+            box-shadow: 0 0 20px var(--accent-color);
+        }
+        
+        .modal-content h1 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent-color);
+            animation: flicker 1.5s infinite alternate;
+        }
+
+        .modal-content p {
+            font-size: 0.8rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+        
+        .modal-content .start-prompt {
+            font-size: 1rem;
+            text-align: center;
+            margin-top: 2rem;
+            color: var(--button-bg);
+            animation: flicker 1.5s infinite alternate;
+        }
+
+        @keyframes flicker {
+            0%, 18%, 22%, 25%, 53%, 57%, 100% {
+                text-shadow:
+                0 0 4px #fff,
+                0 0 11px #fff,
+                0 0 19px #fff,
+                0 0 40px var(--accent-color),
+                0 0 80px var(--accent-color),
+                0 0 90px var(--accent-color),
+                0 0 100px var(--accent-color),
+                0 0 150px var(--accent-color);
+            }
+            20%, 24%, 55% {        
+                text-shadow: none;
+            }
+        }
+
+        /* --- Touch Controls (for mobile) --- */
+        .touch-controls {
+            display: none;
+            margin-top: 1rem;
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            width: 100%;
-            max-width: 400px;
-            /* Custom hammer cursor - now bigger! */
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="72" height="72" viewBox="0 0 24 24"><g transform="rotate(45 12 12)"><rect x="8" y="2" width="8" height="4" rx="1" fill="%23A0522D"/><rect x="11" y="6" width="2" height="16" rx="1" fill="%23DEB887"/></g></svg>') 18 18, auto;
+            grid-template-rows: repeat(2, 1fr);
+            gap: 0.5rem;
+            width: 240px;
         }
-        .game-grid:active {
-            /* Rotated hammer on click to simulate a swing - also bigger! */
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="72" height="72" viewBox="0 0 24 24"><g transform="rotate(65 12 12)"><rect x="8" y="2" width="8" height="4" rx="1" fill="%23A0522D"/><rect x="11" y="6" width="2" height="16" rx="1" fill="%23DEB887"/></g></svg>') 18 18, auto;
+        .touch-btn {
+            background-color: var(--grid-bg);
+            color: var(--text-color);
+            border: 2px solid var(--grid-line);
+            font-size: 1.5rem;
+            padding: 0.75rem;
+            user-select: none;
         }
-        .hole {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            background-color: #A0522D; /* SaddleBrown */
-            border-radius: 50%;
-            border: 5px solid #8B4513; /* Darker SaddleBrown */
-            overflow: hidden;
-            position: relative;
-            box-shadow: inset 0 10px 10px rgba(0,0,0,0.4);
-            transition: all 0.2s ease;
+        .touch-btn:active {
+             background-color: var(--accent-color);
+             color: var(--bg-color);
         }
-        .hole:active {
-            transform: scale(0.95);
-        }
-        .mole {
-            width: 75%;
-            height: 75%;
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%) translateY(100%);
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="%238B572A"/><circle cx="35" cy="40" r="5" fill="black"/><circle cx="65" cy="40" r="5" fill="black"/><ellipse cx="50" cy="60" rx="15" ry="8" fill="%23F5DEB3"/><path d="M40 70 Q50 80 60 70" stroke="black" fill="none" stroke-width="3"/></svg>');
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: bottom;
-            transition: transform 0.2s ease-out;
-            pointer-events: none; /* Mole itself is not clickable, only the hole */
-        }
-        .hole.up .mole {
-            transform: translateX(-50%) translateY(0%);
-        }
-        .whacked .mole {
-             transform: translateX(-50%) translateY(100%) rotate(30deg);
-             transition: transform 0.1s ease-in;
+        .touch-btn.rotate { grid-column: 2 / 3; grid-row: 1 / 2; }
+        .touch-btn.left { grid-column: 1 / 2; grid-row: 2 / 3; }
+        .touch-btn.down { grid-column: 2 / 3; grid-row: 2 / 3; }
+        .touch-btn.right { grid-column: 3 / 4; grid-row: 2 / 3; }
+
+
+        /* --- Responsive Design --- */
+        @media (max-width: 768px) {
+            body {
+                align-items: flex-start;
+                padding-top: 1rem;
+            }
+            .game-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+            .sidebar {
+                flex-direction: row;
+                width: 100%;
+                max-width: 320px; /* Match canvas width */
+                justify-content: space-around;
+                gap: 1rem;
+            }
+            .stat-box {
+                padding: 0.5rem;
+                flex-grow: 1;
+            }
+            .stat-box h2 { font-size: 0.75rem; }
+            .stat-box p { font-size: 1rem; }
+            .next-piece-container { width: 80px; }
+            #next-piece-canvas { width: 80px; height: 80px; }
+            .touch-controls { display: grid; }
         }
     </style>
 </head>
-<body class="bg-green-400 flex flex-col items-center justify-center min-h-screen p-4 text-gray-800">
+<body>
 
-    <div class="w-full max-w-md bg-green-600 p-6 rounded-2xl shadow-2xl border-8 border-green-800 text-center">
-        <h1 class="text-6xl text-yellow-300 tracking-wider text-shadow-lg" style="text-shadow: 4px 4px 0px rgba(0,0,0,0.2);">Whack-a-Mole!</h1>
+    <div class="game-container">
+        <!-- Main game canvas -->
+        <canvas id="game-board"></canvas>
 
-        <div class="flex justify-around my-6 text-4xl text-white">
-            <div>
-                <h2>Score: <span id="score" class="text-yellow-300">0</span></h2>
+        <!-- Sidebar with score, next piece, and controls -->
+        <div class="sidebar">
+            <div class="stat-box">
+                <h2>Score</h2>
+                <p id="score">0</p>
             </div>
-            <div>
-                <h2>Time: <span id="time-left" class="text-yellow-300">30</span></h2>
+            <div class="stat-box next-piece-container">
+                <h2>Next</h2>
+                <canvas id="next-piece-canvas"></canvas>
+            </div>
+            <button id="start-button" class="button">Start</button>
+            <div class="touch-controls">
+                <button class="touch-btn rotate" id="touch-rotate">⟳</button>
+                <button class="touch-btn left" id="touch-left">←</button>
+                <button class="touch-btn down" id="touch-down">↓</button>
+                <button class="touch-btn right" id="touch-right">→</button>
             </div>
         </div>
+    </div>
 
-        <div id="game-grid" class="game-grid mx-auto mb-6">
-            </div>
+    <!-- Instructions Modal -->
+    <div id="instructions-modal" class="modal" style="display: flex;">
+        <div class="modal-content">
+            <h1>Tetris</h1>
+            <p>Left/Right Arrows: Move</p>
+            <p>Up Arrow / Space: Rotate</p>
+            <p>Down Arrow: Soft Drop</p>
+            <p class="start-prompt">Press Space to Start</p>
+        </div>
+    </div>
 
-        <button id="start-button" class="bg-red-500 hover:bg-red-600 text-white text-4xl py-3 px-10 rounded-lg shadow-lg border-b-8 border-red-700 active:border-b-2 active:translate-y-1 transition-all duration-100 ease-in-out">
-            Start Game
-        </button>
-        
-        <div id="game-over-message" class="hidden text-5xl text-red-500 mt-4" style="text-shadow: 2px 2px 0px #FFF;"></div>
-
+    <!-- Game Over Modal -->
+    <div id="game-over-modal" class="modal">
+        <div class="modal-content">
+            <h1>Game Over</h1>
+            <p style="text-align: center;">Score: <span id="final-score">0</span></p>
+            <button id="restart-button" class="button">Again</button>
+            <p class="start-prompt">Or Press Space</p>
+        </div>
     </div>
 
     <script>
-        // --- DOM Elements ---
-        const gameGrid = document.getElementById('game-grid');
-        const scoreDisplay = document.getElementById('score');
-        const timeLeftDisplay = document.getElementById('time-left');
-        const startButton = document.getElementById('start-button');
-        const gameOverMessage = document.getElementById('game-over-message');
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Canvas and Context Setup ---
+            const canvas = document.getElementById('game-board');
+            const context = canvas.getContext('2d');
+            const nextCanvas = document.getElementById('next-piece-canvas');
+            const nextContext = nextCanvas.getContext('2d');
 
-        // --- Game State Variables ---
-        let holes = [];
-        let score = 0;
-        let timeLeft = 30;
-        let moleAppearanceTimer = null;
-        let countdownTimer = null;
-        let lastHoleIndex = -1;
-        let isGameRunning = false;
-        
-        // --- Sound Synthesis ---
-        // Create a simple synth for sound effects to avoid external file dependencies
-        const synth = new Tone.Synth({
-            oscillator: { type: 'square' },
-            envelope: { attack: 0.01, decay: 0.1, sustain: 0.2, release: 0.1 }
-        }).toDestination();
-        
-        const hitSound = () => synth.triggerAttackRelease('C4', '8n');
-        const missSound = () => {
-            const missSynth = new Tone.Synth({
-                oscillator: { type: 'sine' },
-                envelope: { attack: 0.01, decay: 0.2, sustain: 0.1, release: 0.2 }
-            }).toDestination();
-            missSynth.triggerAttackRelease('A2', '16n', Tone.now(), 0.5);
-        };
-
-
-        // --- Game Initialization ---
-        function createGameBoard() {
-            // Create 9 holes for the game grid
-            for (let i = 0; i < 9; i++) {
-                const hole = document.createElement('div');
-                hole.classList.add('hole');
-                hole.dataset.index = i; // Store index for tracking
-
-                const mole = document.createElement('div');
-                mole.classList.add('mole');
-                
-                hole.appendChild(mole);
-                gameGrid.appendChild(hole);
-                holes.push(hole);
-            }
-        }
-
-        // --- Game Logic ---
-        function startGame() {
-            if (isGameRunning) return; // Prevent starting multiple times
-            isGameRunning = true;
+            // --- DOM Elements ---
+            const scoreElement = document.getElementById('score');
+            const restartButton = document.getElementById('restart-button');
+            const gameOverModal = document.getElementById('game-over-modal');
+            const finalScoreElement = document.getElementById('final-score');
+            const instructionsModal = document.getElementById('instructions-modal');
             
-            // Reset game state
-            score = 0;
-            timeLeft = 30;
-            scoreDisplay.textContent = score;
-            timeLeftDisplay.textContent = timeLeft;
-            gameOverMessage.classList.add('hidden');
-            startButton.classList.add('hidden');
-            
-            // Start the game loops
-            moleAppearanceTimer = setInterval(showRandomMole, 800); // A mole appears every 800ms
-            countdownTimer = setInterval(countdown, 1000); // Timer counts down every second
-        }
+            // --- Game Constants ---
+            const COLS = 10;
+            const ROWS = 20;
+            const BLOCK_SIZE = 32;
+            const COLORS = [
+                null,
+                '#FF00FF', // I (Magenta)
+                '#00FFFF', // J (Cyan)
+                '#FFFF00', // L (Yellow)
+                '#00FF00', // O (Green)
+                '#FF0000', // S (Red)
+                '#FFA500', // T (Orange)
+                '#0000FF', // Z (Blue)
+            ];
+            const SHAPES = [
+                [], // Empty
+                [[1, 1, 1, 1]], // I
+                [[2, 0, 0], [2, 2, 2]], // J
+                [[0, 0, 3], [3, 3, 3]], // L
+                [[4, 4], [4, 4]], // O
+                [[0, 5, 5], [5, 5, 0]], // S
+                [[0, 6, 0], [6, 6, 6]], // T
+                [[7, 7, 0], [0, 7, 7]], // Z
+            ];
 
-        function endGame() {
-            isGameRunning = false;
-            
-            // Stop game loops
-            clearInterval(moleAppearanceTimer);
-            clearInterval(countdownTimer);
-            
-            // Display final message and show start button
-            gameOverMessage.textContent = `Game Over! Final Score: ${score}`;
-            gameOverMessage.classList.remove('hidden');
-            startButton.classList.remove('hidden');
-            startButton.textContent = 'Play Again?';
+            // --- Game State ---
+            let grid;
+            let currentPiece;
+            let nextPiece;
+            let score;
+            let isGameOver = true; // Start as true to prevent input before game starts
+            let animationFrameId;
+            let lastTime = 0;
+            let dropCounter = 0;
+            let dropInterval = 1000; // ms
 
-            // Hide any remaining moles
-            holes.forEach(hole => hole.classList.remove('up', 'whacked'));
-        }
+            // --- Sound Engine ---
+            let audioContext;
+            const soundEffects = {
+                rotate: { freq: 440, type: 'sine', dur: 0.05 },
+                land: { freq: 110, type: 'square', dur: 0.1 },
+                clear: { freq: 880, type: 'triangle', dur: 0.2 },
+                gameOver: { freq: 220, type: 'sawtooth', dur: 0.5 }
+            };
 
-        function countdown() {
-            timeLeft--;
-            timeLeftDisplay.textContent = timeLeft;
-            if (timeLeft <= 0) {
-                endGame();
-            }
-        }
-
-        function showRandomMole() {
-            // Hide previous mole if it's still up
-            holes.forEach(hole => hole.classList.remove('up'));
-
-            // Get a new random hole that is different from the last one
-            let randomIndex;
-            do {
-                randomIndex = Math.floor(Math.random() * holes.length);
-            } while (randomIndex === lastHoleIndex);
-            
-            lastHoleIndex = randomIndex;
-            const randomHole = holes[randomIndex];
-            
-            // Make the mole appear
-            randomHole.classList.add('up');
-
-            // Set a timer to make the mole disappear after a random duration
-            const randomTime = Math.random() * (1000 - 400) + 400; // between 400ms and 1000ms
-            setTimeout(() => {
-                if (!randomHole.classList.contains('whacked')) {
-                    randomHole.classList.remove('up');
+            function initAudio() {
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 }
-            }, randomTime);
-        }
-
-        function whack(e) {
-            if (!isGameRunning) return;
-
-            const hole = e.target.closest('.hole');
-            if (!hole) { // Clicked on grid gap, not a hole
-                missSound();
-                return;
             }
 
-            // Check if a mole was in the hole and it wasn't already whacked
-            if (hole.classList.contains('up') && !hole.classList.contains('whacked')) {
-                // It's a hit!
-                hitSound();
-                score++;
-                scoreDisplay.textContent = score;
+            function playSound(name) {
+                if (!audioContext || !soundEffects[name]) return;
+                const sfx = soundEffects[name];
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+
+                oscillator.type = sfx.type;
+                oscillator.frequency.setValueAtTime(sfx.freq, audioContext.currentTime);
                 
-                // Add whacked class for visual feedback and prevent multiple scores
-                hole.classList.add('whacked');
+                // For game over, create a falling pitch effect
+                if (name === 'gameOver') {
+                    oscillator.frequency.exponentialRampToValueAtTime(sfx.freq / 2, audioContext.currentTime + sfx.dur);
+                }
+
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + sfx.dur);
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
                 
-                // Quickly hide the mole after it's whacked
-                setTimeout(() => {
-                    hole.classList.remove('up', 'whacked');
-                }, 200);
-            } else {
-                // It's a miss!
-                missSound();
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + sfx.dur);
             }
-        }
 
-        // --- Event Listeners ---
-        startButton.addEventListener('click', startGame);
-        gameGrid.addEventListener('mousedown', whack); // Use mousedown for faster response than click
+            // --- Setup ---
+            function setupCanvases() {
+                canvas.width = COLS * BLOCK_SIZE;
+                canvas.height = ROWS * BLOCK_SIZE;
+                context.scale(BLOCK_SIZE, BLOCK_SIZE);
+                nextCanvas.width = 4 * BLOCK_SIZE;
+                nextCanvas.height = 4 * BLOCK_SIZE;
+                nextContext.scale(BLOCK_SIZE, BLOCK_SIZE);
+            }
 
-        // --- Initial Setup ---
-        window.onload = () => {
-            createGameBoard();
-        };
+            // --- Game Logic ---
+            function init() {
+                initAudio(); // Initialize audio on first interaction
+                grid = createEmptyGrid();
+                score = 0;
+                isGameOver = false;
+                dropInterval = 1000;
+                updateScore();
+                spawnNewPiece();
+                spawnNewPiece(); // To populate current and next
+                instructionsModal.style.display = 'none';
+                gameOverModal.style.display = 'none';
+                if (animationFrameId) cancelAnimationFrame(animationFrameId);
+                gameLoop();
+            }
+
+            function gameLoop(time = 0) {
+                if (isGameOver) return;
+
+                const deltaTime = time - lastTime;
+                lastTime = time;
+                dropCounter += deltaTime;
+
+                if (dropCounter > dropInterval) {
+                    pieceDrop();
+                }
+
+                draw();
+                animationFrameId = requestAnimationFrame(gameLoop);
+            }
+
+            function createEmptyGrid() {
+                return Array.from({ length: ROWS }, () => Array(COLS).fill(0));
+            }
+
+            function spawnNewPiece() {
+                const pieceType = Math.floor(Math.random() * (SHAPES.length - 1)) + 1;
+                currentPiece = nextPiece || createPiece(pieceType);
+                nextPiece = createPiece(Math.floor(Math.random() * (SHAPES.length - 1)) + 1);
+                
+                if (checkCollision(grid, currentPiece)) {
+                    isGameOver = true;
+                    showGameOver();
+                }
+            }
+            
+            function createPiece(type) {
+                const matrix = SHAPES[type];
+                return {
+                    x: Math.floor(COLS / 2) - Math.floor(matrix[0].length / 2),
+                    y: 0,
+                    matrix: matrix,
+                };
+            }
+
+            // --- Player Actions ---
+            function pieceMove(direction) {
+                currentPiece.x += direction;
+                if (checkCollision(grid, currentPiece)) {
+                    currentPiece.x -= direction;
+                }
+            }
+
+            function pieceDrop() {
+                currentPiece.y++;
+                if (checkCollision(grid, currentPiece)) {
+                    currentPiece.y--;
+                    mergePieceToGrid();
+                    playSound('land');
+                    clearLines();
+                    spawnNewPiece();
+                    dropInterval = Math.max(150, 1000 - score); // Speed up
+                }
+                dropCounter = 0;
+            }
+
+            function pieceRotate() {
+                playSound('rotate');
+                const originalMatrix = currentPiece.matrix;
+                currentPiece.matrix = rotateMatrix(currentPiece.matrix);
+                
+                let offset = 1;
+                while (checkCollision(grid, currentPiece)) {
+                    currentPiece.x += offset;
+                    offset = -(offset + (offset > 0 ? 1 : -1));
+                    if (offset > currentPiece.matrix[0].length) {
+                        currentPiece.matrix = originalMatrix; // Revert if can't fit
+                        return;
+                    }
+                }
+            }
+
+            function rotateMatrix(matrix) {
+                const rows = matrix.length;
+                const cols = matrix[0].length;
+                const newMatrix = Array.from({ length: cols }, () => Array(rows).fill(0));
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        newMatrix[c][rows - 1 - r] = matrix[r][c];
+                    }
+                }
+                return newMatrix;
+            }
+
+            // --- Collision & Grid ---
+            function checkCollision(grid, piece) {
+                const { matrix, x, y } = piece;
+                for (let r = 0; r < matrix.length; r++) {
+                    for (let c = 0; c < matrix[r].length; c++) {
+                        if (matrix[r][c] !== 0) {
+                            const newX = x + c;
+                            const newY = y + r;
+                            if (newX < 0 || newX >= COLS || newY >= ROWS || (grid[newY] && grid[newY][newX] !== 0)) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                return false;
+            }
+
+            function mergePieceToGrid() {
+                const { matrix, x, y } = currentPiece;
+                matrix.forEach((row, r) => {
+                    row.forEach((value, c) => {
+                        if (value !== 0) {
+                            grid[y + r][x + c] = value;
+                        }
+                    });
+                });
+            }
+
+            function clearLines() {
+                let linesCleared = 0;
+                outer: for (let r = ROWS - 1; r >= 0; r--) {
+                    for (let c = 0; c < COLS; c++) {
+                        if (grid[r][c] === 0) continue outer;
+                    }
+                    const row = grid.splice(r, 1)[0].fill(0);
+                    grid.unshift(row);
+                    r++;
+                    linesCleared++;
+                }
+                if (linesCleared > 0) {
+                    playSound('clear');
+                    // Score based on Tetris guideline
+                    const linePoints = [0, 40, 100, 300, 1200];
+                    score += linePoints[linesCleared];
+                    updateScore();
+                }
+            }
+
+            // --- Drawing ---
+            function draw() {
+                context.fillStyle = '#1a1a1a';
+                context.fillRect(0, 0, canvas.width, canvas.height);
+                drawMatrix(context, grid, { x: 0, y: 0 });
+                if (currentPiece) {
+                    drawMatrix(context, currentPiece.matrix, { x: currentPiece.x, y: currentPiece.y });
+                }
+                drawNextPiece();
+            }
+            
+            function drawMatrix(ctx, matrix, offset) {
+                matrix.forEach((row, y) => {
+                    row.forEach((value, x) => {
+                        if (value !== 0) {
+                            ctx.fillStyle = COLORS[value];
+                            ctx.fillRect(x + offset.x, y + offset.y, 1, 1);
+                        }
+                    });
+                });
+            }
+
+            function drawNextPiece() {
+                nextContext.fillStyle = '#1a1a1a';
+                nextContext.fillRect(0, 0, nextCanvas.width, nextCanvas.height);
+                if (nextPiece) {
+                    const { matrix } = nextPiece;
+                    const offsetX = (4 - matrix[0].length) / 2;
+                    const offsetY = (4 - matrix.length) / 2;
+                    drawMatrix(nextContext, matrix, { x: offsetX, y: offsetY });
+                }
+            }
+
+            // --- UI ---
+            function updateScore() {
+                scoreElement.innerText = score;
+            }
+
+            function showGameOver() {
+                playSound('gameOver');
+                cancelAnimationFrame(animationFrameId);
+                finalScoreElement.innerText = score;
+                gameOverModal.style.display = 'flex';
+            }
+
+            // --- Event Listeners ---
+            document.addEventListener('keydown', event => {
+                // Start/Restart game with Spacebar
+                if (event.key === ' ' && isGameOver) {
+                    event.preventDefault();
+                    init();
+                    return;
+                }
+
+                if (isGameOver) return;
+
+                const actions = {
+                    'ArrowLeft': () => pieceMove(-1),
+                    'ArrowRight': () => pieceMove(1),
+                    'ArrowDown': () => pieceDrop(),
+                    'ArrowUp': () => pieceRotate(),
+                    ' ': () => pieceRotate(),
+                };
+                if (actions[event.key]) {
+                    event.preventDefault();
+                    actions[event.key]();
+                }
+            });
+
+            // Touch controls
+            document.getElementById('touch-left').addEventListener('click', () => !isGameOver && pieceMove(-1));
+            document.getElementById('touch-right').addEventListener('click', () => !isGameOver && pieceMove(1));
+            document.getElementById('touch-down').addEventListener('click', () => !isGameOver && pieceDrop());
+            document.getElementById('touch-rotate').addEventListener('click', () => {
+                if (!isGameOver) {
+                    initAudio(); // Ensure audio is ready for touch
+                    pieceRotate();
+                }
+            });
+
+            restartButton.addEventListener('click', init);
+
+            // --- Initial Call ---
+            setupCanvases();
+            context.fillStyle = '#1a1a1a';
+            context.fillRect(0, 0, canvas.width, canvas.height);
+        });
     </script>
 </body>
 </html>
