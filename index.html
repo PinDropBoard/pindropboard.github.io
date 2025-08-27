@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Play Tetris!</title>
+    <title>- Play Tetris! -</title>
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/566/566312.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -180,14 +180,14 @@
                 0 0 100px var(--accent-color),
                 0 0 150px var(--accent-color);
             }
-            20%, 24%, 55% {        
+            20%, 24%, 55% {      
                 text-shadow: none;
             }
         }
 
         /* --- Touch Controls (for mobile) --- */
         .touch-controls {
-            display: none;
+            display: none; /* Hidden by default */
             margin-top: 1rem;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(2, 1fr);
@@ -238,17 +238,15 @@
             .stat-box p { font-size: 1rem; }
             .next-piece-container { width: 80px; }
             #next-piece-canvas { width: 80px; height: 80px; }
-            .touch-controls { display: grid; }
+            .touch-controls { display: grid; } /* Show on small screens */
         }
     </style>
 </head>
 <body>
 
     <div class="game-container">
-        <!-- Main game canvas -->
         <canvas id="game-board"></canvas>
 
-        <!-- Sidebar with score, next piece, and controls -->
         <div class="sidebar">
             <div class="stat-box">
                 <h2>Score</h2>
@@ -268,7 +266,6 @@
         </div>
     </div>
 
-    <!-- Instructions Modal -->
     <div id="instructions-modal" class="modal" style="display: flex;">
         <div class="modal-content">
             <h1>Tetris</h1>
@@ -279,7 +276,6 @@
         </div>
     </div>
 
-    <!-- Game Over Modal -->
     <div id="game-over-modal" class="modal">
         <div class="modal-content">
             <h1>Game Over</h1>
