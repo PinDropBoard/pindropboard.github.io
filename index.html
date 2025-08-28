@@ -3,696 +3,552 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Block Bash</title>
-    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/566/566312.png">
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&display=swap" rel="stylesheet">
+    <title>Dodge the Asteroids</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root {
-            --bg-color: #4c6ef5;
-            --text-color: #ffffff;
-            --score-bg: #e2e8f0;
-            --button-bg: #2b458b;
-            --button-hover-bg: #364fc7;
-            --game-over-bg: rgba(0, 0, 0, 0.7);
-            --modal-bg: #2f4996;
-            --block-color-1: #38a169;
-            --block-color-2: #3182ce;
-            --block-color-3: #dd6b20;
-            --block-color-4: #ed8936;
-            --block-color-5: #6b46c1;
-            --block-color-6: #e53e3e;
-            --board-border: #2b458b; /* Dark border for grid */
-            --cell-bg: #3b5093; /* Darker cell background for contrast */
-            --cell-active-bg: #4c68b7;
-        }
-
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
         body {
-            font-family: 'Raleway', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            background-color: #0d1117;
+            color: #ffffff;
+            overflow: hidden; /* Prevent scroll bars */
+        }
+        canvas {
+            background-color: #000000;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.2);
+            touch-action: none; /* Disable default touch actions */
+        }
+        .game-container {
             display: flex;
+            flex-direction: column;
+            align-items: center;
             justify-content: center;
-            align-items: center;
             min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            box-sizing: border-box;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            backdrop-filter: blur(8px); /* Subtle blur to make content pop */
+            padding: 1rem;
         }
-
-        .container {
-            background-color: transparent;
-            border-radius: 1rem;
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            max-width: 90%;
-            border: none;
-            box-shadow: none;
-        }
-        
-        .header-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        h1 {
+        .game-title {
             font-size: 2.5rem;
             font-weight: 700;
-            color: var(--text-color);
-            margin: 0 0 1rem;
-            letter-spacing: -0.05em;
-            text-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            color: #e0f2fe;
+            text-shadow: 0 0 10px #0ea5e9;
         }
-
-        .score-display {
-            background-color: var(--score-bg);
-            padding: 0.75rem 1.5rem;
-            border-radius: 9999px;
+        .game-instructions {
+            font-size: 1rem;
+            color: #a0aec0;
+            margin-top: 0.5rem;
+            text-align: center;
+        }
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 600px;
+            margin-top: 1rem;
             font-size: 1.25rem;
             font-weight: 700;
-            min-width: 150px;
-            text-align: center;
-            position: relative;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), 0 2px 5px rgba(0,0,0,0.2);
-            color: #334e68;
+            color: #ffffff;
         }
-
-        .game-area {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .game-board {
-            display: grid;
-            grid-template-columns: repeat(9, 1fr);
-            gap: 4px;
-            background-color: var(--board-border);
-            border-radius: 0.5rem;
-            padding: 4px;
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .cell {
-            width: 40px;
-            height: 40px;
-            background-color: var(--cell-bg);
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.2s ease-in-out;
-            box-shadow: inset 0 2px 2px rgba(255,255,255,0.1), inset 0 -2px 2px rgba(0,0,0,0.2);
-        }
-
-        .cell:hover:not([data-filled="true"]):not([data-highlight="true"]) {
-            background-color: var(--cell-active-bg);
-        }
-
-        .cell[data-filled="true"] {
-            background-color: var(--block-color);
-            box-shadow: inset 0 4px 4px rgba(255,255,255,0.2), inset 0 -4px 4px rgba(0,0,0,0.3);
-            border-radius: 4px;
-        }
-
-        .cell[data-highlight="true"] {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .block-selector-container {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-top: 2rem;
-            min-height: 120px;
-        }
-
-        .block-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            border-radius: 0.5rem;
-            padding: 0.5rem;
-            cursor: pointer;
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-            opacity: 1;
-        }
-
-        .block-container.selected {
-            opacity: 1;
-            transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-        }
-
-        .block-grid {
-            display: grid;
-            gap: 6px;
-        }
-
-        .block-cell {
-            width: 30px;
-            height: 30px;
-            border-radius: 3px;
-        }
-
-        .buttons-container {
-            margin-top: 2rem;
-            display: flex;
-            gap: 1rem;
-        }
-
-        .btn {
-            background-color: var(--button-bg);
-            color: white;
-            padding: 0.75rem 2rem;
-            border: none;
-            border-radius: 9999px;
-            font-family: 'Raleway', sans-serif;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out, box-shadow 0.2s ease-in-out;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .btn:hover {
-            background-color: var(--button-hover-bg);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .game-over-message, .modal {
-            position: fixed;
+        .game-over-container {
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            display: flex;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            display: none; /* Hidden by default */
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            background-color: var(--game-over-bg);
-            backdrop-filter: blur(5px);
-            z-index: 20;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+            border-radius: 12px;
         }
-
-        .modal.visible, .game-over-message.visible {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal-content {
-            background-color: var(--modal-bg);
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            text-align: center;
-            max-width: 500px;
-            color: var(--text-color);
-            position: relative;
-        }
-
-        .modal-content h2 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
+        .game-over-message {
+            font-size: 3rem;
             font-weight: 700;
+            color: #ef4444;
+            text-shadow: 0 0 15px #ef4444;
+            animation: pulse 1.5s infinite;
         }
-
-        .modal-content p {
-            font-size: 1rem;
-            line-height: 1.5;
-            text-align: left;
-        }
-
-        .modal-content ul {
-            text-align: left;
-            padding-left: 1.5rem;
-        }
-
-        .modal-close-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: none;
-            border: none;
+        .final-score-text {
             font-size: 1.5rem;
-            color: var(--text-color);
+            margin-top: 1rem;
+            color: #ffffff;
+        }
+        .play-again-button {
+            margin-top: 2rem;
+            padding: 0.75rem 2rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #0ea5e9, #1d4ed8);
+            color: #ffffff;
+            border-radius: 9999px;
+            box-shadow: 0 5px 15px rgba(14, 165, 233, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
             cursor: pointer;
         }
+        .play-again-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(14, 165, 233, 0.6);
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .mobile-controls {
+            display: none; /* Hidden by default on desktop */
+            width: 100%;
+            max-width: 400px;
+            margin-top: 1rem;
+            justify-content: center;
+            gap: 1rem;
+        }
 
-        @media (max-width: 600px) {
-            .cell {
-                width: 30px;
-                height: 30px;
+        .control-button {
+            padding: 1rem;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border-radius: 12px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+            touch-action: manipulation; /* Improves touch responsiveness */
+        }
+        .control-button:active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(0.95);
+        }
+        @media (max-width: 768px) {
+            .mobile-controls {
+                display: grid;
+                grid-template-areas:
+                    ". up ."
+                    "left . right"
+                    ". down .";
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 0.5rem;
             }
-
-            .block-cell {
-                width: 20px;
-                height: 20px;
-            }
-
-            .block-selector-container {
-                gap: 1rem;
-            }
-
-            h1 {
-                font-size: 2rem;
-            }
-
-            .score-display {
-                font-size: 1rem;
-            }
-
-            .game-over-message {
-                font-size: 1.2rem;
-            }
+            #up-button { grid-area: up; }
+            #left-button { grid-area: left; }
+            #right-button { grid-area: right; }
+            #down-button { grid-area: down; }
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header-section">
-        <h1>Block Bash</h1>
-        <div class="score-display">Score: 0</div>
-    </div>
-    <div class="game-area">
-        <div class="game-board" id="game-board"></div>
-        <div class="game-over-message" id="game-over-message">
-            Game Over!
-            <p>Your Score: <span id="final-score">0</span></p>
+    <div class="game-container">
+        <h1 class="game-title">Dodge the Asteroids</h1>
+        <p class="game-instructions">Use the arrow keys or swipe on the screen to move your ship. Dodge the asteroids to survive!</p>
+        <div class="game-info w-full max-w-xl px-4 md:px-0">
+            <span id="scoreDisplay">Score: 0</span>
+            <span id="livesDisplay">Lives: 3</span>
+        </div>
+        <div class="relative w-full max-w-xl aspect-[4/3] mt-4">
+            <canvas id="gameCanvas" class="w-full h-full"></canvas>
+            <div id="gameOverContainer" class="game-over-container">
+                <div class="game-over-message">GAME OVER</div>
+                <div id="finalScoreText" class="final-score-text"></div>
+                <button id="playAgainButton" class="play-again-button">Play Again</button>
+            </div>
+        </div>
+        <!-- Mobile Controls -->
+        <div class="mobile-controls">
+            <button id="up-button" class="control-button">▲</button>
+            <button id="left-button" class="control-button">◀</button>
+            <button id="right-button" class="control-button">▶</button>
+            <button id="down-button" class="control-button">▼</button>
         </div>
     </div>
-    <div class="block-selector-container" id="block-selector-container"></div>
-    <div class="buttons-container">
-        <button class="btn" id="new-game-btn">New Game</button>
-        <button class="btn" id="instructions-btn">How to Play</button>
-    </div>
-</div>
 
-<!-- Instructions Modal -->
-<div id="instructions-modal" class="modal">
-    <div class="modal-content">
-        <button class="modal-close-btn" id="close-modal-btn">&times;</button>
-        <h2>How to Play</h2>
-        <p>Your goal is to clear as many blocks as possible from the 9x9 grid. You'll receive three random blocks at a time.</p>
-        <ul>
-            <li>Tap on a block from the bottom selector to pick it up.</li>
-            <li>Tap on an empty spot on the grid to place the block.</li>
-            <li>Clear blocks by filling a complete row, column, or a 3x3 square.</li>
-            <li>The more lines you clear at once, the more points you get!</li>
-        </ul>
-        <p>The game ends when you can no longer place any of the three available blocks on the board.</p>
-    </div>
-</div>
+    <script>
+        window.onload = function() {
+            // Get the canvas and its 2D context
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            const livesDisplay = document.getElementById('livesDisplay');
+            const gameOverContainer = document.getElementById('gameOverContainer');
+            const finalScoreText = document.getElementById('finalScoreText');
+            const playAgainButton = document.getElementById('playAgainButton');
+            const upButton = document.getElementById('up-button');
+            const downButton = document.getElementById('down-button');
+            const leftButton = document.getElementById('left-button');
+            const rightButton = document.getElementById('right-button');
 
-<script>
-    // --- Game Constants and Setup ---
-    const BOARD_SIZE = 9;
-    const gameBoardEl = document.getElementById('game-board');
-    const scoreEl = document.querySelector('.score-display');
-    const blockSelectorEl = document.getElementById('block-selector-container');
-    const newGameBtn = document.getElementById('new-game-btn');
-    const instructionsBtn = document.getElementById('instructions-btn');
-    const gameOverMessageEl = document.getElementById('game-over-message');
-    const finalScoreEl = document.getElementById('final-score');
-    const instructionsModal = document.getElementById('instructions-modal');
-    const closeModalBtn = document.getElementById('close-modal-btn');
+            // Set canvas dimensions to be responsive
+            const resizeCanvas = () => {
+                const container = canvas.parentElement;
+                canvas.width = container.clientWidth;
+                canvas.height = container.clientHeight;
+            };
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
 
-    // Block color palette
-    const colors = [
-        'var(--block-color-1)',
-        'var(--block-color-2)',
-        'var(--block-color-3)',
-        'var(--block-color-4)',
-        'var(--block-color-5)',
-        'var(--block-color-6)'
-    ];
-
-    // Define the block shapes. Each shape is a 2D array of 1s and 0s.
-    // The dimensions of the inner arrays determine the size of the block grid.
-    const blockShapes = [
-        { shape: [[1]], size: 1 },
-        { shape: [[1, 1]], size: 2 },
-        { shape: [[1], [1]], size: 2 },
-        { shape: [[1, 1], [1, 1]], size: 2 },
-        { shape: [[1, 1, 1]], size: 3 },
-        { shape: [[1], [1], [1]], size: 3 },
-        { shape: [[0, 1], [1, 1]], size: 2 },
-        { shape: [[1, 0], [1, 1]], size: 2 },
-        { shape: [[1, 1], [0, 1]], size: 2 },
-        { shape: [[1, 1], [1, 0]], size: 2 },
-        { shape: [[1, 1, 1], [0, 1, 0]], size: 3 }, // T-shape
-        { shape: [[1, 1, 0], [0, 1, 1]], size: 3 }, // Z-shape
-    ];
-
-    let gameState = {};
-    let highlightedCells = [];
-
-    // --- Core Game Functions ---
-    /**
-     * Initializes a new game state.
-     */
-    function initGame() {
-        gameState = {
-            board: Array.from({ length: BOARD_SIZE }, () => Array(BOARD_SIZE).fill(null)),
-            score: 0,
-            selectedBlock: null,
-            availableBlocks: []
-        };
-        // Generate the initial set of 3 blocks
-        generateRandomBlocks();
-        // Hide the game over message
-        gameOverMessageEl.classList.remove('visible');
-        // Clear the game board UI
-        gameBoardEl.innerHTML = '';
-        // Draw the initial state
-        draw();
-    }
-
-    /**
-     * Generates a new set of 3 random blocks for the selector area.
-     */
-    function generateRandomBlocks() {
-        gameState.availableBlocks = [];
-        for (let i = 0; i < 3; i++) {
-            const randomIndex = Math.floor(Math.random() * blockShapes.length);
-            const randomColorIndex = Math.floor(Math.random() * colors.length);
-            gameState.availableBlocks.push({
-                shape: blockShapes[randomIndex].shape,
-                color: colors[randomColorIndex],
-                size: blockShapes[randomIndex].size,
-                id: Date.now() + i // Unique ID for each block
-            });
-        }
-    }
-
-    /**
-     * Renders the entire game state to the DOM.
-     */
-    function draw() {
-        drawBoard();
-        drawBlocks();
-        updateScore();
-    }
-
-    /**
-     * Renders the game board.
-     */
-    function drawBoard() {
-        gameBoardEl.innerHTML = '';
-        for (let r = 0; r < BOARD_SIZE; r++) {
-            for (let c = 0; c < BOARD_SIZE; c++) {
-                const cell = document.createElement('div');
-                cell.classList.add('cell');
-                cell.dataset.row = r;
-                cell.dataset.col = c;
-                if (gameState.board[r][c] !== null) {
-                    cell.dataset.filled = 'true';
-                    cell.style.backgroundColor = gameState.board[r][c];
-                }
-                gameBoardEl.appendChild(cell);
-            }
-        }
-    }
-
-    /**
-     * Renders the available blocks in the selector area.
-     */
-    function drawBlocks() {
-        blockSelectorEl.innerHTML = '';
-        gameState.availableBlocks.forEach(block => {
-            const blockContainer = document.createElement('div');
-            blockContainer.classList.add('block-container');
-            if (gameState.selectedBlock && gameState.selectedBlock.id === block.id) {
-                blockContainer.classList.add('selected');
-            }
-            blockContainer.dataset.blockId = block.id;
-            blockContainer.style.gridTemplateColumns = `repeat(${block.shape[0].length}, 1fr)`;
-
-            const blockGrid = document.createElement('div');
-            blockGrid.classList.add('block-grid');
-            blockGrid.style.gridTemplateColumns = `repeat(${block.shape[0].length}, 1fr)`;
+            // Game variables
+            let player;
+            let asteroids = [];
+            let score = 0;
+            let lives = 3;
+            let gameSpeed = 1;
+            let isGameOver = false;
+            let touchStartX = 0;
+            let touchStartY = 0;
             
-            for (let r = 0; r < block.shape.length; r++) {
-                for (let c = 0; c < block.shape[0].length; c++) {
-                    const blockCell = document.createElement('div');
-                    blockCell.classList.add('block-cell');
-                    if (block.shape[r][c] === 1) {
-                        blockCell.style.backgroundColor = block.color;
-                        blockCell.style.boxShadow = `inset 0 2px 2px rgba(255,255,255,0.2), inset 0 -2px 2px rgba(0,0,0,0.3)`;
+            // Audio context and functions
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+            // Helper function to decode base64 to ArrayBuffer
+            const base64ToArrayBuffer = (base64) => {
+                const binaryString = atob(base64);
+                const len = binaryString.length;
+                const bytes = new Uint8Array(len);
+                for (let i = 0; i < len; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
+                }
+                return bytes.buffer;
+            };
+            
+            // Helper function to convert PCM audio data to WAV Blob
+            const pcmToWav = (pcmData, sampleRate) => {
+                const numChannels = 1;
+                const sampleLength = pcmData.length;
+                const buffer = new ArrayBuffer(44 + sampleLength * 2);
+                const view = new DataView(buffer);
+
+                // WAV header
+                const writeString = (view, offset, string) => {
+                    for (let i = 0; i < string.length; i++) {
+                        view.setUint8(offset + i, string.charCodeAt(i));
                     }
-                    blockGrid.appendChild(blockCell);
+                };
+
+                writeString(view, 0, 'RIFF');
+                view.setUint32(4, 36 + sampleLength * 2, true);
+                writeString(view, 8, 'WAVE');
+                writeString(view, 12, 'fmt ');
+                view.setUint32(16, 16, true);
+                view.setUint16(20, 1, true);
+                view.setUint16(22, numChannels, true);
+                view.setUint32(24, sampleRate, true);
+                view.setUint32(28, sampleRate * numChannels * 2, true);
+                view.setUint16(32, numChannels * 2, true);
+                view.setUint16(34, 16, true);
+                writeString(view, 36, 'data');
+                view.setUint32(40, sampleLength * 2, true);
+
+                // Write PCM data
+                let offset = 44;
+                for (let i = 0; i < sampleLength; i++) {
+                    view.setInt16(offset, pcmData[i], true);
+                    offset += 2;
                 }
-            }
-            blockContainer.appendChild(blockGrid);
-            blockSelectorEl.appendChild(blockContainer);
-        });
-    }
 
-    /**
-     * Updates the score display.
-     */
-    function updateScore() {
-        scoreEl.textContent = `${gameState.score}`;
-    }
+                return new Blob([view], { type: 'audio/wav' });
+            };
 
-    /**
-     * Checks if a block can be placed at a given position.
-     * @param {Object} block - The block to be placed.
-     * @param {number} startRow - The starting row.
-     * @param {number} startCol - The starting column.
-     * @returns {boolean} True if the block can be placed, false otherwise.
-     */
-    function canPlaceBlock(block, startRow, startCol) {
-        for (let r = 0; r < block.shape.length; r++) {
-            for (let c = 0; c < block.shape[0].length; c++) {
-                if (block.shape[r][c] === 1) {
-                    const boardRow = startRow + r;
-                    const boardCol = startCol + c;
-                    if (
-                        boardRow >= BOARD_SIZE ||
-                        boardCol >= BOARD_SIZE ||
-                        gameState.board[boardRow][boardCol] !== null
-                    ) {
-                        return false;
+            const playSound = async (text) => {
+                const payload = {
+                    contents: [{ parts: [{ text: text }] }],
+                    generationConfig: {
+                        responseModalities: ["AUDIO"],
+                        speechConfig: {
+                            voiceConfig: {
+                                prebuiltVoiceConfig: { voiceName: "Kore" }
+                            }
+                        }
+                    },
+                    model: "gemini-2.5-flash-preview-tts"
+                };
+                
+                const apiKey = "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`API call failed: ${response.statusText}`);
                     }
+
+                    const result = await response.json();
+                    const part = result?.candidates?.[0]?.content?.parts?.[0];
+                    const audioData = part?.inlineData?.data;
+                    const mimeType = part?.inlineData?.mimeType;
+
+                    if (audioData && mimeType && mimeType.startsWith("audio/")) {
+                        const sampleRateMatch = mimeType.match(/rate=(\d+)/);
+                        if (!sampleRateMatch) {
+                            console.error("Could not parse sample rate from MIME type");
+                            return;
+                        }
+                        const sampleRate = parseInt(sampleRateMatch[1], 10);
+                        const pcmData = base64ToArrayBuffer(audioData);
+                        const pcm16 = new Int16Array(pcmData);
+                        const wavBlob = pcmToWav(pcm16, sampleRate);
+                        const audioUrl = URL.createObjectURL(wavBlob);
+                        
+                        const audio = new Audio(audioUrl);
+                        audio.play();
+
+                    } else {
+                        console.error("No audio data found in response.");
+                    }
+                } catch (error) {
+                    console.error("Error playing sound:", error);
                 }
-            }
-        }
-        return true;
-    }
+            };
+            
 
-    /**
-     * Places a block on the game board.
-     * @param {Object} block - The block to be placed.
-     * @param {number} startRow - The starting row.
-     * @param {number} startCol - The starting column.
-     */
-    function placeBlock(block, startRow, startCol) {
-        for (let r = 0; r < block.shape.length; r++) {
-            for (let c = 0; c < block.shape[0].length; c++) {
-                if (block.shape[r][c] === 1) {
-                    gameState.board[startRow + r][startCol + c] = block.color;
-                }
-            }
-        }
-        // Increase score for each cell placed
-        const scoreToAdd = block.shape.flat().filter(cell => cell === 1).length;
-        gameState.score += scoreToAdd;
+            // Player object
+            const createPlayer = () => {
+                return {
+                    x: canvas.width / 2,
+                    y: canvas.height - 50,
+                    size: 20,
+                    speed: 5,
+                    draw() {
+                        ctx.save();
+                        ctx.fillStyle = '#0ea5e9';
+                        ctx.beginPath();
+                        ctx.moveTo(this.x, this.y);
+                        ctx.lineTo(this.x - this.size / 2, this.y + this.size);
+                        ctx.lineTo(this.x + this.size / 2, this.y + this.size);
+                        ctx.closePath();
+                        ctx.fill();
 
-        // Remove the block from the available blocks list
-        gameState.availableBlocks = gameState.availableBlocks.filter(b => b.id !== block.id);
-        gameState.selectedBlock = null;
-    }
+                        // Add a small rectangle for the cockpit
+                        ctx.fillStyle = '#1d4ed8';
+                        ctx.fillRect(this.x - 5, this.y + 10, 10, 5);
+                        ctx.restore();
+                    }
+                };
+            };
 
-    /**
-     * Checks for and clears completed rows, columns, and 3x3 squares.
-     * Awards points for cleared blocks.
-     */
-    function checkAndClear() {
-        let linesCleared = 0;
-        let blocksCleared = 0;
-        let cellsToClear = new Set();
+            // Asteroid object
+            const createAsteroid = () => {
+                const size = Math.random() * 20 + 10; // Random size between 10 and 30
+                const speed = (Math.random() * 2 + 1) * gameSpeed; // Random speed
+                const x = Math.random() * (canvas.width - size); // Random starting x position
+                const y = -size; // Start above the canvas
+                return {
+                    x,
+                    y,
+                    size,
+                    speed,
+                    draw() {
+                        ctx.fillStyle = '#6b7280';
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                };
+            };
 
-        // Check for completed rows and columns
-        for (let i = 0; i < BOARD_SIZE; i++) {
-            // Check row i
-            let rowFull = true;
-            let colFull = true;
-            for (let j = 0; j < BOARD_SIZE; j++) {
-                if (gameState.board[i][j] === null) rowFull = false;
-                if (gameState.board[j][i] === null) colFull = false;
-            }
-            if (rowFull) {
-                for (let j = 0; j < BOARD_SIZE; j++) cellsToClear.add(`${i}-${j}`);
-                linesCleared++;
-            }
-            if (colFull) {
-                for (let j = 0; j < BOARD_SIZE; j++) cellsToClear.add(`${j}-${i}`);
-                linesCleared++;
-            }
-        }
+            // Function to check for collisions
+            const checkCollision = (obj1, obj2) => {
+                const dist = Math.sqrt(Math.pow(obj1.x - obj2.x, 2) + Math.pow(obj1.y - obj2.y, 2));
+                return dist < obj1.size + obj2.size;
+            };
 
-        // Check for completed 3x3 squares
-        for (let r = 0; r <= BOARD_SIZE - 3; r += 3) {
-            for (let c = 0; c <= BOARD_SIZE - 3; c += 3) {
-                let squareFull = true;
-                for (let i = 0; i < 3; i++) {
-                    for (let j = 0; j < 3; j++) {
-                        if (gameState.board[r + i][c + j] === null) {
-                            squareFull = false;
-                            break;
+            // Main game update loop
+            const update = () => {
+                if (isGameOver) return;
+
+                // Move player based on keyboard/button input
+                player.x += player.dx || 0;
+                player.y += player.dy || 0;
+
+                // Keep player within canvas bounds
+                player.x = Math.max(0, Math.min(canvas.width, player.x));
+                player.y = Math.max(0, Math.min(canvas.height, player.y));
+
+                // Move and update asteroids
+                asteroids.forEach((asteroid, index) => {
+                    asteroid.y += asteroid.speed;
+
+                    // Check for collision with player
+                    if (checkCollision(player, asteroid)) {
+                        lives--;
+                        asteroids.splice(index, 1); // Remove the asteroid
+                        playSound("An asteroid has hit the ship!");
+                        if (lives <= 0) {
+                            endGame();
+                        } else {
+                            livesDisplay.textContent = `Lives: ${lives}`;
                         }
                     }
-                    if (!squareFull) break;
-                }
-                if (squareFull) {
-                    for (let i = 0; i < 3; i++) {
-                        for (let j = 0; j < 3; j++) {
-                            cellsToClear.add(`${r + i}-${c + j}`);
+
+                    // Remove asteroids that are off-screen
+                    if (asteroid.y > canvas.height + asteroid.size) {
+                        asteroids.splice(index, 1);
+                        score++;
+                        scoreDisplay.textContent = `Score: ${score}`;
+                        // Increase game speed every 10 points
+                        if (score % 10 === 0) {
+                            gameSpeed += 0.1;
                         }
                     }
-                    blocksCleared++;
+                });
+
+                // Spawn new asteroids
+                if (Math.random() < 0.02 * gameSpeed) { // Spawn rate increases with speed
+                    asteroids.push(createAsteroid());
                 }
-            }
-        }
+            };
 
-        // Clear the cells
-        cellsToClear.forEach(cellKey => {
-            const [r, c] = cellKey.split('-').map(Number);
-            gameState.board[r][c] = null;
-        });
+            // Main game draw loop
+            const draw = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+                player.draw();
+                asteroids.forEach(asteroid => asteroid.draw());
+            };
 
-        // Award points for clearing
-        const clearedCount = cellsToClear.size;
-        if (clearedCount > 0) {
-            gameState.score += clearedCount * 10;
-        }
-    }
-
-    /**
-     * Checks if the game is over.
-     * The game is over if none of the available blocks can be placed anywhere on the board.
-     * @returns {boolean} True if the game is over, false otherwise.
-     */
-    function checkGameOver() {
-        if (gameState.availableBlocks.length === 0) {
-            generateRandomBlocks();
-            return false;
-        }
-
-        for (const block of gameState.availableBlocks) {
-            for (let r = 0; r <= BOARD_SIZE - block.shape.length; r++) {
-                for (let c = 0; c <= BOARD_SIZE - block.shape[0].length; c++) {
-                    if (canPlaceBlock(block, r, c)) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Highlights the possible placement area for the selected block.
-     */
-    function highlightCells(event) {
-        if (!gameState.selectedBlock) return;
-        
-        clearHighlights();
-
-        const cell = event.target.closest('.cell');
-        if (!cell) return;
-
-        const row = Number(cell.dataset.row);
-        const col = Number(cell.dataset.col);
-
-        if (canPlaceBlock(gameState.selectedBlock, row, col)) {
-            for (let r = 0; r < gameState.selectedBlock.shape.length; r++) {
-                for (let c = 0; c < gameState.selectedBlock.shape[0].length; c++) {
-                    if (gameState.selectedBlock.shape[r][c] === 1) {
-                        const targetCell = gameBoardEl.querySelector(`[data-row="${row + r}"][data-col="${col + c}"]`);
-                        if (targetCell) {
-                            targetCell.dataset.highlight = 'true';
-                            highlightedCells.push(targetCell);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Clears all highlighted cells.
-     */
-    function clearHighlights() {
-        highlightedCells.forEach(cell => {
-            cell.dataset.highlight = 'false';
-        });
-        highlightedCells = [];
-    }
-
-    // --- Event Listeners and Game Flow ---
-    document.addEventListener('DOMContentLoaded', initGame);
-
-    newGameBtn.addEventListener('click', () => {
-        initGame();
-    });
-
-    instructionsBtn.addEventListener('click', () => {
-        instructionsModal.classList.add('visible');
-    });
-
-    closeModalBtn.addEventListener('click', () => {
-        instructionsModal.classList.remove('visible');
-    });
-
-    blockSelectorEl.addEventListener('click', (event) => {
-        const blockContainer = event.target.closest('.block-container');
-        if (blockContainer) {
-            const blockId = Number(blockContainer.dataset.blockId);
-            const block = gameState.availableBlocks.find(b => b.id === blockId);
-            if (gameState.selectedBlock && gameState.selectedBlock.id === blockId) {
-                gameState.selectedBlock = null; // Deselect
-                clearHighlights();
-            } else {
-                gameState.selectedBlock = block;
-            }
-            drawBlocks();
-        }
-    });
-
-    gameBoardEl.addEventListener('click', (event) => {
-        const cell = event.target.closest('.cell');
-        if (cell && gameState.selectedBlock) {
-            const row = Number(cell.dataset.row);
-            const col = Number(cell.dataset.col);
-
-            if (canPlaceBlock(gameState.selectedBlock, row, col)) {
-                placeBlock(gameState.selectedBlock, row, col);
-                checkAndClear();
-                clearHighlights();
-                if (checkGameOver()) {
-                    finalScoreEl.textContent = gameState.score;
-                    gameOverMessageEl.classList.add('visible');
-                }
+            // Game loop function
+            const gameLoop = () => {
+                update();
                 draw();
-            }
-        }
-    });
+                if (!isGameOver) {
+                    requestAnimationFrame(gameLoop);
+                }
+            };
 
-    gameBoardEl.addEventListener('mouseover', highlightCells);
-    gameBoardEl.addEventListener('mouseout', clearHighlights);
+            // Function to end the game
+            const endGame = () => {
+                isGameOver = true;
+                gameOverContainer.style.display = 'flex';
+                finalScoreText.textContent = `Final Score: ${score}`;
+                playSound("Game over!");
+            };
 
-</script>
+            // Function to reset the game
+            const resetGame = () => {
+                isGameOver = false;
+                score = 0;
+                lives = 3;
+                gameSpeed = 1;
+                asteroids = [];
+                player = createPlayer();
+                scoreDisplay.textContent = `Score: ${score}`;
+                livesDisplay.textContent = `Lives: ${lives}`;
+                gameOverContainer.style.display = 'none';
+                gameLoop();
+            };
+
+            // Event listeners for keyboard input
+            document.addEventListener('keydown', (e) => {
+                if (isGameOver) return;
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        player.dx = -player.speed;
+                        break;
+                    case 'ArrowRight':
+                        player.dx = player.speed;
+                        break;
+                    case 'ArrowUp':
+                        player.dy = -player.speed;
+                        break;
+                    case 'ArrowDown':
+                        player.dy = player.speed;
+                        break;
+                }
+            });
+
+            document.addEventListener('keyup', (e) => {
+                if (isGameOver) return;
+                switch(e.key) {
+                    case 'ArrowLeft':
+                    case 'ArrowRight':
+                        player.dx = 0;
+                        break;
+                    case 'ArrowUp':
+                    case 'ArrowDown':
+                        player.dy = 0;
+                        break;
+                }
+            });
+            
+            // Event listeners for mobile buttons
+            const setPlayerDirection = (dx, dy) => {
+                player.dx = dx;
+                player.dy = dy;
+            };
+
+            upButton.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                setPlayerDirection(0, -player.speed);
+            });
+            upButton.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                setPlayerDirection(0, 0);
+            });
+
+            downButton.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                setPlayerDirection(0, player.speed);
+            });
+            downButton.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                setPlayerDirection(0, 0);
+            });
+
+            leftButton.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                setPlayerDirection(-player.speed, 0);
+            });
+            leftButton.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                setPlayerDirection(0, 0);
+            });
+
+            rightButton.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                setPlayerDirection(player.speed, 0);
+            });
+            rightButton.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                setPlayerDirection(0, 0);
+            });
+
+            // Event listeners for touch swiping
+            canvas.addEventListener('touchstart', (e) => {
+                if (isGameOver) return;
+                const touch = e.touches[0];
+                touchStartX = touch.clientX;
+                touchStartY = touch.clientY;
+            });
+
+            canvas.addEventListener('touchmove', (e) => {
+                if (isGameOver) return;
+                const touch = e.touches[0];
+                const deltaX = touch.clientX - touchStartX;
+                const deltaY = touch.clientY - touchStartY;
+                const sensitivity = 0.5; // Adjust sensitivity
+                player.x += deltaX * sensitivity;
+                player.y += deltaY * sensitivity;
+
+                // Update start positions for next move
+                touchStartX = touch.clientX;
+                touchStartY = touch.clientY;
+            });
+
+            // Play Again button handler
+            playAgainButton.addEventListener('click', resetGame);
+
+            // Initial game setup
+            resetGame();
+        };
+    </script>
+
 </body>
 </html>
