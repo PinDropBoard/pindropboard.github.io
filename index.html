@@ -1,553 +1,226 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dodge the Asteroids</title>
-    <link rel="icon" type="image/png" href="https://static.stratege.ru/trophies/NPWR09962_00/TROP006.PNG">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0d1117;
-            color: #ffffff;
-            overflow: hidden; /* Prevent scroll bars */
-        }
-        canvas {
-            background-color: #000000;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.2);
-            touch-action: none; /* Disable default touch actions */
-        }
-        .game-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 1rem;
-        }
-        .game-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #e0f2fe;
-            text-shadow: 0 0 10px #0ea5e9;
-        }
-        .game-instructions {
-            font-size: 1rem;
-            color: #a0aec0;
-            margin-top: 0.5rem;
-            text-align: center;
-        }
-        .game-info {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            max-width: 600px;
-            margin-top: 1rem;
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #ffffff;
-        }
-        .game-over-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            display: none; /* Hidden by default */
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border-radius: 12px;
-        }
-        .game-over-message {
-            font-size: 3rem;
-            font-weight: 700;
-            color: #ef4444;
-            text-shadow: 0 0 15px #ef4444;
-            animation: pulse 1.5s infinite;
-        }
-        .final-score-text {
-            font-size: 1.5rem;
-            margin-top: 1rem;
-            color: #ffffff;
-        }
-        .play-again-button {
-            margin-top: 2rem;
-            padding: 0.75rem 2rem;
-            font-size: 1.25rem;
-            font-weight: 700;
-            background: linear-gradient(45deg, #0ea5e9, #1d4ed8);
-            color: #ffffff;
-            border-radius: 9999px;
-            box-shadow: 0 5px 15px rgba(14, 165, 233, 0.4);
-            transition: transform 0.2s, box-shadow 0.2s;
-            cursor: pointer;
-        }
-        .play-again-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(14, 165, 233, 0.6);
-        }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-        .mobile-controls {
-            display: none; /* Hidden by default on desktop */
-            width: 100%;
-            max-width: 400px;
-            margin-top: 1rem;
-            justify-content: center;
-            gap: 1rem;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PinDrop Board</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: url('https://i.imgur.com/3ZQ3ZQb.jpg') center/cover no-repeat;
+      height: 100vh;
+      overflow: hidden;
+    }
 
-        .control-button {
-            padding: 1rem;
-            width: 60px;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-            border-radius: 12px;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: background 0.2s, transform 0.2s;
-            touch-action: manipulation; /* Improves touch responsiveness */
-        }
-        .control-button:active {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(0.95);
-        }
-        @media (max-width: 768px) {
-            .mobile-controls {
-                display: grid;
-                grid-template-areas:
-                    ". up ."
-                    "left . right"
-                    ". down .";
-                grid-template-columns: 1fr 1fr 1fr;
-                gap: 0.5rem;
-            }
-            #up-button { grid-area: up; }
-            #left-button { grid-area: left; }
-            #right-button { grid-area: right; }
-            #down-button { grid-area: down; }
-        }
-    </style>
+    #board {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .note {
+      position: absolute;
+      background: #fff8b0;
+      padding: 12px 12px 8px;
+      border: 1px solid #d4b886;
+      box-shadow: 4px 4px 10px rgba(0,0,0,0.3);
+      width: 200px;
+      min-height: 100px;
+      resize: both;
+      overflow: auto;
+      border-radius: 8px;
+      transform: rotate(-1deg);
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+      animation: popIn 0.4s ease;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.8) rotate(-2deg); opacity: 0; }
+      to { transform: scale(1) rotate(-1deg); opacity: 1; }
+    }
+
+    .note:hover {
+      transform: rotate(0deg) scale(1.03);
+      box-shadow: 6px 6px 12px rgba(0,0,0,0.4);
+      z-index: 2;
+    }
+
+    .note::before {
+      content: '';
+      display: block;
+      width: 16px;
+      height: 16px;
+      background: radial-gradient(circle, #d00 40%, #800 100%);
+      border-radius: 50%;
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .note textarea {
+      width: 100%;
+      height: 60px;
+      border: none;
+      background: transparent;
+      resize: none;
+      font-family: inherit;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .note button {
+      margin-top: 5px;
+      font-size: 12px;
+      background: #ff6f61;
+      color: white;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    #addNoteBtn {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 10px 15px;
+      background: #ff6f61;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    }
+
+    #noteForm {
+      position: absolute;
+      top: 50px;
+      left: 10px;
+      background: #fff;
+      padding: 10px;
+      border: 1px solid #ccc;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+      display: none;
+      z-index: 10;
+      border-radius: 6px;
+    }
+
+    #noteForm textarea {
+      width: 100%;
+      height: 60px;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    label {
+      font-size: 13px;
+    }
+  </style>
 </head>
 <body>
+  <div id="board"></div>
+  <button id="addNoteBtn">+ Add Note</button>
 
-    <div class="game-container">
-        <h1 class="game-title">Dodge the Asteroids</h1>
-        <p class="game-instructions">Use the arrow keys to move the ship on pc or drag the ship on mobile. Dodge the asteroids to survive!</p>
-        <div class="game-info w-full max-w-xl px-4 md:px-0">
-            <span id="scoreDisplay">Score: 0</span>
-            <span id="livesDisplay">Lives: 3</span>
-        </div>
-        <div class="relative w-full max-w-xl aspect-[4/3] mt-4">
-            <canvas id="gameCanvas" class="w-full h-full"></canvas>
-            <div id="gameOverContainer" class="game-over-container">
-                <div class="game-over-message">GAME OVER</div>
-                <div id="finalScoreText" class="final-score-text"></div>
-                <button id="playAgainButton" class="play-again-button">Play Again</button>
-            </div>
-        </div>
-        <div class="mobile-controls">
-            <button id="up-button" class="control-button">▲</button>
-            <button id="left-button" class="control-button">◀</button>
-            <button id="right-button" class="control-button">▶</button>
-            <button id="down-button" class="control-button">▼</button>
-        </div>
-    </div>
+  <div id="noteForm">
+    <textarea id="noteText" placeholder="Write your note..."></textarea><br>
+    <label><input type="checkbox" id="humanCheck"> I'm not a bot</label><br>
+    <button onclick="submitNote()">Post</button>
+    <button onclick="cancelNote()">Cancel</button>
+  </div>
 
-    <script>
-        window.onload = function() {
-            // Get the canvas and its 2D context
-            const canvas = document.getElementById('gameCanvas');
-            const ctx = canvas.getContext('2d');
-            const scoreDisplay = document.getElementById('scoreDisplay');
-            const livesDisplay = document.getElementById('livesDisplay');
-            const gameOverContainer = document.getElementById('gameOverContainer');
-            const finalScoreText = document.getElementById('finalScoreText');
-            const playAgainButton = document.getElementById('playAgainButton');
-            const upButton = document.getElementById('up-button');
-            const downButton = document.getElementById('down-button');
-            const leftButton = document.getElementById('left-button');
-            const rightButton = document.getElementById('right-button');
+  <script>
+    const board = document.getElementById('board');
+    const noteForm = document.getElementById('noteForm');
+    const noteText = document.getElementById('noteText');
+    const humanCheck = document.getElementById('humanCheck');
+    const badWords = ['badword1', 'badword2', 'hate', 'kill', 'racist']; // Add more as needed
 
-            // Set canvas dimensions to be responsive
-            const resizeCanvas = () => {
-                const container = canvas.parentElement;
-                canvas.width = container.clientWidth;
-                canvas.height = container.clientHeight;
-            };
-            window.addEventListener('resize', resizeCanvas);
-            resizeCanvas();
+    let notes = [];
 
-            // Game variables
-            let player;
-            let asteroids = [];
-            let score = 0;
-            let lives = 3;
-            let gameSpeed = 1;
-            let isGameOver = false;
-            let touchStartX = 0;
-            let touchStartY = 0;
-            
-            // Audio context and functions
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    function showForm() {
+      noteForm.style.display = 'block';
+    }
 
-            // Helper function to decode base64 to ArrayBuffer
-            const base64ToArrayBuffer = (base64) => {
-                const binaryString = atob(base64);
-                const len = binaryString.length;
-                const bytes = new Uint8Array(len);
-                for (let i = 0; i < len; i++) {
-                    bytes[i] = binaryString.charCodeAt(i);
-                }
-                return bytes.buffer;
-            };
-            
-            // Helper function to convert PCM audio data to WAV Blob
-            const pcmToWav = (pcmData, sampleRate) => {
-                const numChannels = 1;
-                const sampleLength = pcmData.length;
-                const buffer = new ArrayBuffer(44 + sampleLength * 2);
-                const view = new DataView(buffer);
+    function cancelNote() {
+      noteForm.style.display = 'none';
+      noteText.value = '';
+      humanCheck.checked = false;
+    }
 
-                // WAV header
-                const writeString = (view, offset, string) => {
-                    for (let i = 0; i < string.length; i++) {
-                        view.setUint8(offset + i, string.charCodeAt(i));
-                    }
-                };
+    function containsBadWords(text) {
+      const lower = text.toLowerCase();
+      return badWords.some(word => lower.includes(word));
+    }
 
-                writeString(view, 0, 'RIFF');
-                view.setUint32(4, 36 + sampleLength * 2, true);
-                writeString(view, 8, 'WAVE');
-                writeString(view, 12, 'fmt ');
-                view.setUint32(16, 16, true);
-                view.setUint16(20, 1, true);
-                view.setUint16(22, numChannels, true);
-                view.setUint32(24, sampleRate, true);
-                view.setUint32(28, sampleRate * numChannels * 2, true);
-                view.setUint16(32, numChannels * 2, true);
-                view.setUint16(34, 16, true);
-                writeString(view, 36, 'data');
-                view.setUint32(40, sampleLength * 2, true);
+    function submitNote() {
+      const text = noteText.value.trim();
+      if (!humanCheck.checked) {
+        alert("Please confirm you're not a bot.");
+        return;
+      }
+      if (!text) {
+        alert("Note cannot be empty.");
+        return;
+      }
+      if (containsBadWords(text)) {
+        alert("Your note contains inappropriate content.");
+        return;
+      }
 
-                // Write PCM data
-                let offset = 44;
-                for (let i = 0; i < sampleLength; i++) {
-                    view.setInt16(offset, pcmData[i], true);
-                    offset += 2;
-                }
+      const note = {
+        id: Date.now(),
+        text,
+        x: Math.random() * (window.innerWidth - 220),
+        y: Math.random() * (window.innerHeight - 120),
+        timestamp: Date.now()
+      };
+      notes.push(note);
+      renderNotes();
+      cancelNote();
+    }
 
-                return new Blob([view], { type: 'audio/wav' });
-            };
+    function renderNotes() {
+      board.innerHTML = '';
+      const now = Date.now();
+      notes = notes.filter(n => now - n.timestamp < 86400000); // 24 hours
+      notes.forEach(note => {
+        const div = document.createElement('div');
+        div.className = 'note';
+        div.style.left = note.x + 'px';
+        div.style.top = note.y + 'px';
 
-            const playSound = async (text) => {
-                const payload = {
-                    contents: [{ parts: [{ text: text }] }],
-                    generationConfig: {
-                        responseModalities: ["AUDIO"],
-                        speechConfig: {
-                            voiceConfig: {
-                                prebuiltVoiceConfig: { voiceName: "Kore" }
-                            }
-                        }
-                    },
-                    model: "gemini-2.5-flash-preview-tts"
-                };
-                
-                const apiKey = "";
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
-
-                try {
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(`API call failed: ${response.statusText}`);
-                    }
-
-                    const result = await response.json();
-                    const part = result?.candidates?.[0]?.content?.parts?.[0];
-                    const audioData = part?.inlineData?.data;
-                    const mimeType = part?.inlineData?.mimeType;
-
-                    if (audioData && mimeType && mimeType.startsWith("audio/")) {
-                        const sampleRateMatch = mimeType.match(/rate=(\d+)/);
-                        if (!sampleRateMatch) {
-                            console.error("Could not parse sample rate from MIME type");
-                            return;
-                        }
-                        const sampleRate = parseInt(sampleRateMatch[1], 10);
-                        const pcmData = base64ToArrayBuffer(audioData);
-                        const pcm16 = new Int16Array(pcmData);
-                        const wavBlob = pcmToWav(pcm16, sampleRate);
-                        const audioUrl = URL.createObjectURL(wavBlob);
-                        
-                        const audio = new Audio(audioUrl);
-                        audio.play();
-
-                    } else {
-                        console.error("No audio data found in response.");
-                    }
-                } catch (error) {
-                    console.error("Error playing sound:", error);
-                }
-            };
-            
-
-            // Player object
-            const createPlayer = () => {
-                return {
-                    x: canvas.width / 2,
-                    y: canvas.height - 50,
-                    size: 20,
-                    speed: 5,
-                    draw() {
-                        ctx.save();
-                        ctx.fillStyle = '#0ea5e9';
-                        ctx.beginPath();
-                        ctx.moveTo(this.x, this.y);
-                        ctx.lineTo(this.x - this.size / 2, this.y + this.size);
-                        ctx.lineTo(this.x + this.size / 2, this.y + this.size);
-                        ctx.closePath();
-                        ctx.fill();
-
-                        // Add a small rectangle for the cockpit
-                        ctx.fillStyle = '#1d4ed8';
-                        ctx.fillRect(this.x - 5, this.y + 10, 10, 5);
-                        ctx.restore();
-                    }
-                };
-            };
-
-            // Asteroid object
-            const createAsteroid = () => {
-                const size = Math.random() * 20 + 10; // Random size between 10 and 30
-                const speed = (Math.random() * 2 + 1) * gameSpeed; // Random speed
-                const x = Math.random() * (canvas.width - size); // Random starting x position
-                const y = -size; // Start above the canvas
-                return {
-                    x,
-                    y,
-                    size,
-                    speed,
-                    draw() {
-                        ctx.fillStyle = '#6b7280';
-                        ctx.beginPath();
-                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-                };
-            };
-
-            // Function to check for collisions
-            const checkCollision = (obj1, obj2) => {
-                const dist = Math.sqrt(Math.pow(obj1.x - obj2.x, 2) + Math.pow(obj1.y - obj2.y, 2));
-                return dist < obj1.size + obj2.size;
-            };
-
-            // Main game update loop
-            const update = () => {
-                if (isGameOver) return;
-
-                // Move player based on keyboard/button input
-                player.x += player.dx || 0;
-                player.y += player.dy || 0;
-
-                // Keep player within canvas bounds
-                player.x = Math.max(0, Math.min(canvas.width, player.x));
-                player.y = Math.max(0, Math.min(canvas.height, player.y));
-
-                // Move and update asteroids
-                asteroids.forEach((asteroid, index) => {
-                    asteroid.y += asteroid.speed;
-
-                    // Check for collision with player
-                    if (checkCollision(player, asteroid)) {
-                        lives--;
-                        asteroids.splice(index, 1); // Remove the asteroid
-                        playSound("An asteroid has hit the ship!");
-                        if (lives <= 0) {
-                            endGame();
-                        } else {
-                            livesDisplay.textContent = `Lives: ${lives}`;
-                        }
-                    }
-
-                    // Remove asteroids that are off-screen
-                    if (asteroid.y > canvas.height + asteroid.size) {
-                        asteroids.splice(index, 1);
-                        score++;
-                        scoreDisplay.textContent = `Score: ${score}`;
-                        // Increase game speed every 10 points
-                        if (score % 10 === 0) {
-                            gameSpeed += 0.1;
-                        }
-                    }
-                });
-
-                // Spawn new asteroids
-                if (Math.random() < 0.02 * gameSpeed) { // Spawn rate increases with speed
-                    asteroids.push(createAsteroid());
-                }
-            };
-
-            // Main game draw loop
-            const draw = () => {
-                ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-                player.draw();
-                asteroids.forEach(asteroid => asteroid.draw());
-            };
-
-            // Game loop function
-            const gameLoop = () => {
-                update();
-                draw();
-                if (!isGameOver) {
-                    requestAnimationFrame(gameLoop);
-                }
-            };
-
-            // Function to end the game
-            const endGame = () => {
-                isGameOver = true;
-                gameOverContainer.style.display = 'flex';
-                finalScoreText.textContent = `Final Score: ${score}`;
-                playSound("Game over!");
-            };
-
-            // Function to reset the game
-            const resetGame = () => {
-                isGameOver = false;
-                score = 0;
-                lives = 3;
-                gameSpeed = 1;
-                asteroids = [];
-                player = createPlayer();
-                scoreDisplay.textContent = `Score: ${score}`;
-                livesDisplay.textContent = `Lives: ${lives}`;
-                gameOverContainer.style.display = 'none';
-                gameLoop();
-            };
-
-            // Event listeners for keyboard input
-            document.addEventListener('keydown', (e) => {
-                if (isGameOver) return;
-                switch(e.key) {
-                    case 'ArrowLeft':
-                        player.dx = -player.speed;
-                        break;
-                    case 'ArrowRight':
-                        player.dx = player.speed;
-                        break;
-                    case 'ArrowUp':
-                        player.dy = -player.speed;
-                        break;
-                    case 'ArrowDown':
-                        player.dy = player.speed;
-                        break;
-                }
-            });
-
-            document.addEventListener('keyup', (e) => {
-                if (isGameOver) return;
-                switch(e.key) {
-                    case 'ArrowLeft':
-                    case 'ArrowRight':
-                        player.dx = 0;
-                        break;
-                    case 'ArrowUp':
-                    case 'ArrowDown':
-                        player.dy = 0;
-                        break;
-                }
-            });
-            
-            // Event listeners for mobile buttons
-            const setPlayerDirection = (dx, dy) => {
-                player.dx = dx;
-                player.dy = dy;
-            };
-
-            upButton.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                setPlayerDirection(0, -player.speed);
-            });
-            upButton.addEventListener('touchend', (e) => {
-                e.preventDefault();
-                setPlayerDirection(0, 0);
-            });
-
-            downButton.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                setPlayerDirection(0, player.speed);
-            });
-            downButton.addEventListener('touchend', (e) => {
-                e.preventDefault();
-                setPlayerDirection(0, 0);
-            });
-
-            leftButton.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                setPlayerDirection(-player.speed, 0);
-            });
-            leftButton.addEventListener('touchend', (e) => {
-                e.preventDefault();
-                setPlayerDirection(0, 0);
-            });
-
-            rightButton.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                setPlayerDirection(player.speed, 0);
-            });
-            rightButton.addEventListener('touchend', (e) => {
-                e.preventDefault();
-                setPlayerDirection(0, 0);
-            });
-
-            // Event listeners for touch swiping
-            canvas.addEventListener('touchstart', (e) => {
-                if (isGameOver) return;
-                const touch = e.touches[0];
-                touchStartX = touch.clientX;
-                touchStartY = touch.clientY;
-            });
-
-            canvas.addEventListener('touchmove', (e) => {
-                if (isGameOver) return;
-                const touch = e.touches[0];
-                const deltaX = touch.clientX - touchStartX;
-                const deltaY = touch.clientY - touchStartY;
-                const sensitivity = 0.5; // Adjust sensitivity
-                player.x += deltaX * sensitivity;
-                player.y += deltaY * sensitivity;
-
-                // Update start positions for next move
-                touchStartX = touch.clientX;
-                touchStartY = touch.clientY;
-            });
-
-            // Play Again button handler
-            playAgainButton.addEventListener('click', resetGame);
-
-            // Initial game setup
-            resetGame();
+        const textarea = document.createElement('textarea');
+        textarea.value = note.text;
+        textarea.onchange = () => {
+          if (containsBadWords(textarea.value)) {
+            alert("Inappropriate content detected.");
+            textarea.value = note.text;
+            return;
+          }
+          note.text = textarea.value;
         };
-    </script>
 
+        const delBtn = document.createElement('button');
+        delBtn.textContent = 'Delete';
+        delBtn.onclick = () => {
+          notes = notes.filter(n => n.id !== note.id);
+          renderNotes();
+        };
+
+        div.appendChild(textarea);
+        div.appendChild(delBtn);
+        board.appendChild(div);
+      });
+    }
+
+    document.getElementById('addNoteBtn').onclick = showForm;
+
+    // Auto-refresh every minute to remove expired notes
+    setInterval(renderNotes, 60000);
+  </script>
 </body>
 </html>
