@@ -141,16 +141,14 @@
   <audio id="bg-audio" loop preload="auto" src="https://kappa.vgmsite.com/soundtracks/pokemon-firered-leafgreen-re-engineered-soundtrack-2004/hcdvftoyiy/35.%20Celadon%20City.mp3"></audio>
 
   <script>
-    // Animated GIF URLs for starters and Pikachu from projectpokemon.org
     const animatedSprites = {
       bulbasaur: "https://projectpokemon.org/images/normal-sprite/bulbasaur.gif",
       charmander: "https://projectpokemon.org/images/normal-sprite/charmander.gif",
       squirtle: "https://projectpokemon.org/images/normal-sprite/squirtle.gif",
       pikachu: "https://projectpokemon.org/images/normal-sprite/pikachu.gif",
-      rival: "https://projectpokemon.org/images/normal-sprite/rattata.gif" // Using Rattata as a placeholder for rival sprite
+      rival: "https://projectpokemon.org/images/normal-sprite/rattata.gif"
     };
 
-    // Story data with animated sprites for starters and Pikachu
     const storyData = {
       start: {
         text: "You wake up in Pallet Town. Your adventure is about to begin!",
@@ -170,7 +168,6 @@
           { text: "Choose Squirtle, the water-type", next: "squirtle" },
         ]
       },
-      // MODIFIED: This path is now a major branch of the story
       bulbasaur: {
         text: "You chose Bulbasaur! As you turn to leave, your Rival, Blue, appears!",
         avatar: animatedSprites.bulbasaur,
@@ -192,7 +189,6 @@
           { text: "What does he want?", next: "rivalIntroBulbasaur" }
         ]
       },
-      // NEW: Rival battle sequence
       rivalIntroCharmander: {
         text: "Blue: 'You took Bulbasaur? I'll take this one then!' Blue chose Charmander. 'Let's battle!'",
         avatar: animatedSprites.rival,
@@ -216,7 +212,7 @@
       },
       battle: {
         text: "The battle is intense! Your Pokémon is giving it its all!",
-        avatar: animatedSprites.pikachu, // Generic battle sprite
+        avatar: animatedSprites.pikachu,
         choices: [
           { text: "Use your strongest attack!", next: "battleWin" },
           { text: "Try a defensive move...", next: "battleLose" }
@@ -236,7 +232,6 @@
           { text: "Heal up and begin your journey on Route 1", next: "route1" }
         ]
       },
-      // MODIFIED: Route 1 is now a real location with choices
       route1: {
         text: "You're on Route 1. Tall grass rustles around you. The path to Viridian City is straight ahead.",
         avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/16.png",
@@ -267,7 +262,6 @@
           { text: "Say thanks and leave", next: "start" },
         ]
       },
-      // MODIFIED: Viridian City is now a hub with more to do
       viridian: {
         text: "You've arrived in Viridian City! It's much bigger than Pallet Town.",
         avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png",
@@ -279,7 +273,6 @@
           { text: "Return to Pallet Town", next: "route1" }
         ]
       },
-      // NEW: More locations and events
       pokeCenter: {
         text: "Nurse Joy: 'Welcome to the Pokémon Center! We've restored your Pokémon to full health.'",
         avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
