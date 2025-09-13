@@ -138,7 +138,7 @@
     <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.3" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0.3" aria-label="Volume slider" />
   </div>
 
-  <audio id="bg-audio" loop preload="auto" src="https://kappa.vgmsite.com/soundtracks/pokemon-firered-leafgreen-re-engineered-soundtrack-2004/hcdvftoyiy/35.%20Celadon%20City.mp3"></audio>
+  <audio id="bg-audio" preload="auto"></audio>
 
   <script>
     const animatedSprites = {
@@ -146,7 +146,9 @@
       charmander: "https://projectpokemon.org/images/normal-sprite/charmander.gif",
       squirtle: "https://projectpokemon.org/images/normal-sprite/squirtle.gif",
       pikachu: "https://projectpokemon.org/images/normal-sprite/pikachu.gif",
-      rival: "https://projectpokemon.org/images/normal-sprite/rattata.gif"
+      rival: "https://projectpokemon.org/images/normal-sprite/rattata.gif",
+      caterpie: "https://projectpokemon.org/images/normal-sprite/caterpie.gif",
+      onix: "https://projectpokemon.org/images/normal-sprite/onix.gif",
     };
 
     const storyData = {
@@ -156,16 +158,15 @@
         choices: [
           { text: "Visit Professor Oak to get a Pokémon", next: "oak" },
           { text: "Head north towards Route 1", next: "route1" },
-          { text: "Talk to your mom before you leave", next: "mom" }
         ]
       },
       oak: {
         text: "Professor Oak: 'Welcome! It's time to choose your very first Pokémon!'",
         avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
         choices: [
-          { text: "Choose Bulbasaur, the grass-type", next: "bulbasaur" },
-          { text: "Choose Charmander, the fire-type", next: "charmander" },
-          { text: "Choose Squirtle, the water-type", next: "squirtle" },
+          { text: "Choose Bulbasaur", next: "bulbasaur" },
+          { text: "Choose Charmander", next: "charmander" },
+          { text: "Choose Squirtle", next: "squirtle" },
         ]
       },
       bulbasaur: {
@@ -192,23 +193,17 @@
       rivalIntroCharmander: {
         text: "Blue: 'You took Bulbasaur? I'll take this one then!' Blue chose Charmander. 'Let's battle!'",
         avatar: animatedSprites.rival,
-        choices: [
-          { text: "Battle Blue!", next: "battle" }
-        ]
+        choices: [{ text: "Battle Blue!", next: "battle" }]
       },
       rivalIntroSquirtle: {
         text: "Blue: 'You took Charmander? I'll take this one then!' Blue chose Squirtle. 'Let's battle!'",
         avatar: animatedSprites.rival,
-        choices: [
-          { text: "Battle Blue!", next: "battle" }
-        ]
+        choices: [{ text: "Battle Blue!", next: "battle" }]
       },
       rivalIntroBulbasaur: {
         text: "Blue: 'You took Squirtle? I'll take this one then!' Blue chose Bulbasaur. 'Let's battle!'",
         avatar: animatedSprites.rival,
-        choices: [
-          { text: "Battle Blue!", next: "battle" }
-        ]
+        choices: [{ text: "Battle Blue!", next: "battle" }]
       },
       battle: {
         text: "The battle is intense! Your Pokémon is giving it its all!",
@@ -220,17 +215,13 @@
       },
       battleWin: {
         text: "You won! Blue is frustrated but respects your strength. 'Hmph! Smell ya later!' He runs off.",
-        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/boulder-badge.png",
-        choices: [
-          { text: "Begin your journey on Route 1", next: "route1" }
-        ]
+        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+        choices: [{ text: "Begin your journey on Route 1", next: "route1" }]
       },
       battleLose: {
         text: "You lost, but your Pokémon grew stronger from the experience. Blue smirks, 'Heh! You're no match for me!' He runs off.",
         avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/40.png",
-        choices: [
-          { text: "Heal up and begin your journey on Route 1", next: "route1" }
-        ]
+        choices: [{ text: "Heal up and begin your journey on Route 1", next: "route1" }]
       },
       route1: {
         text: "You're on Route 1. Tall grass rustles around you. The path to Viridian City is straight ahead.",
@@ -251,48 +242,27 @@
       catchSuccess: {
         text: "You caught the Pidgey! It's been added to your team.",
         avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png",
-        choices: [
-          { text: "Awesome! Keep exploring Route 1", next: "route1" }
-        ]
-      },
-      mom: {
-        text: "Mom: 'Be safe on your journey! Don't forget to change your underwear! Here's a Potion.'",
-        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png",
-        choices: [
-          { text: "Say thanks and leave", next: "start" },
-        ]
+        choices: [{ text: "Awesome! Keep exploring Route 1", next: "route1" }]
       },
       viridian: {
-        text: "You've arrived in Viridian City! It's much bigger than Pallet Town.",
+        text: "You've arrived in Viridian City! A man blocks the path north, telling you to come back later.",
         avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png",
         choices: [
           { text: "Visit the Pokémon Center to heal", next: "pokeCenter" },
           { text: "Go to the Poké Mart", next: "pokeMart" },
-          { text: "Challenge the Viridian Gym", next: "gymLocked" },
-          { text: "Head west to Route 22", next: "route22" },
-          { text: "Return to Pallet Town", next: "route1" }
+          { text: "Challenge the Viridian Gym (It's Locked)", next: "gymLocked" },
+          { text: "Enter Viridian Forest", next: "viridianForest" }
         ]
       },
       pokeCenter: {
         text: "Nurse Joy: 'Welcome to the Pokémon Center! We've restored your Pokémon to full health.'",
         avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
-        choices: [
-          { text: "Thank Nurse Joy and exit", next: "viridian" }
-        ]
+        choices: [{ text: "Thank Nurse Joy and exit", next: "viridian" }]
       },
       gymLocked: {
-        text: "You try to enter the Gym, but the door is locked. A sign says the leader is away.",
+        text: "You try to enter the Gym, but the door is locked. A sign says the leader is away on an important journey.",
         avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/57.png",
-        choices: [
-          { text: "Oh well. Back to the city", next: "viridian" }
-        ]
-      },
-      route22: {
-        text: "Route 22 leads towards the Pokémon League. You can see a large building in the distance, but the path is blocked.",
-        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/22.png",
-        choices: [
-          { text: "Maybe I should train more first...", next: "viridian" }
-        ]
+        choices: [{ text: "Oh well. Back to the city", next: "viridian" }]
       },
       pokeMart: {
         text: "The Poké Mart is stocked with Potions and Pokéballs.",
@@ -305,12 +275,77 @@
       buyPokeballs: {
         text: "You bought 5 Pokéballs. Now you're ready to catch more Pokémon!",
         avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png",
+        choices: [{ text: "Leave the Mart", next: "viridian" }]
+      },
+      // NEW STORY PART: VIRIDIAN FOREST -> PEWTER CITY
+      viridianForest: {
+        text: "You enter the deep, winding maze of Viridian Forest. The air is thick with the scent of pine and buzzing Bug Pokémon.",
+        avatar: animatedSprites.caterpie,
         choices: [
-          { text: "Leave the Mart", next: "viridian" }
+          { text: "Follow the main path", next: "forestPath" },
+          { text: "Explore a hidden trail", next: "forestEncounter" }
         ]
       },
+      forestPath: {
+        text: "You navigate the maze and find the exit on the other side. You can see Pewter City ahead!",
+        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/12.png",
+        choices: [{ text: "Head into Pewter City", next: "pewterCity" }]
+      },
+      forestEncounter: {
+        text: "A Bug Catcher spots you! 'Let's see whose bugs are better!' He sends out a Caterpie.",
+        avatar: animatedSprites.caterpie,
+        choices: [
+          { text: "Easily defeat him", next: "forestPath" },
+          { text: "Run past him while he's distracted", next: "forestPath" }
+        ]
+      },
+      pewterCity: {
+        text: "Welcome to Pewter City, a quiet town nestled among stone mountains. The famous Pewter Gym is here.",
+        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/74.png",
+        choices: [
+          { text: "Challenge the Pewter City Gym", next: "pewterGym" },
+          { text: "Visit the Pewter Museum of Science (Closed)", next: "pewterMuseum" },
+          { text: "Head back to Viridian Forest", next: "viridianForest" }
+        ]
+      },
+      pewterMuseum: {
+        text: "The museum is closed for a private event. You'll have to come back later.",
+        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png",
+        choices: [{ text: "Return to the city center", next: "pewterCity" }]
+      },
+      pewterGym: {
+        text: "You enter the gym. The leader, Brock, stands firm. 'I'm Brock! I'm the Pewter Gym Leader. Show me your best!'",
+        avatar: animatedSprites.onix,
+        choices: [
+          { text: "Battle Brock!", next: "brockBattle" }
+        ]
+      },
+      brockBattle: {
+        text: "Brock sends out his mighty Onix! The ground shakes as it roars!",
+        avatar: animatedSprites.onix,
+        choices: [
+          { text: "Use a water or grass move! It's super effective!", next: "pewterGymWin" },
+          { text: "Use a normal attack... It's not very effective.", next: "pewterGymLose" }
+        ]
+      },
+      pewterGymWin: {
+        text: "You defeated Brock! 'I took you for granted. As proof of your victory, here's the Boulder Badge!'",
+        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/boulder-badge.png",
+        choices: [{ text: "Awesome! What's next?", next: "final" }]
+      },
+      pewterGymLose: {
+        text: "Brock's rock-solid Pokémon were too strong. 'Come back and challenge me anytime.' You rush to the Pokémon Center.",
+        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png",
+        choices: [{ text: "Go train some more", next: "pewterCity" }]
+      },
+      final: {
+        text: "With the Boulder Badge in hand, your journey continues! New routes and challenges await!",
+        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png",
+        choices: [{ text: "Restart Adventure", next: "start" }]
+      }
     };
 
+    // --- ELEMENT SELECTORS ---
     const avatarImg = document.getElementById('avatar');
     const storyText = document.getElementById('story-text');
     const choicesDiv = document.getElementById('choices');
@@ -318,6 +353,30 @@
     const bgAudio = document.getElementById('bg-audio');
     const volumeSlider = document.getElementById('volume-slider');
 
+    // --- NEW AUDIO PLAYLIST LOGIC ---
+    const playlist = [
+      "https://nu.vgmsite.com/soundtracks/pokemon-firered-leafgreen-re-engineered-soundtrack-2004/hcdvftoyiy/35.%20Celadon%20City.mp3",
+      "https://nu.vgmsite.com/soundtracks/pokemon-firered-leafgreen-re-engineered-soundtrack-2004/ukzvbvcoaq/26.%20Cerulean%20City.mp3"
+    ];
+    let currentTrackIndex = 0;
+    let hasInteracted = false;
+
+    function playNextTrack() {
+      currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
+      bgAudio.src = playlist[currentTrackIndex];
+      bgAudio.play();
+    }
+    
+    function attemptToPlayAudio() {
+        if (hasInteracted && bgAudio.paused) {
+            bgAudio.play().catch(e => console.log("Audio play failed:", e));
+        }
+    }
+
+    bgAudio.addEventListener('ended', playNextTrack);
+    bgAudio.src = playlist[currentTrackIndex];
+    
+    // --- STORY FUNCTIONS ---
     function loadStoryNode(nodeKey) {
       const node = storyData[nodeKey];
       if (!node) return;
@@ -327,14 +386,16 @@
       storyText.textContent = node.text;
 
       choicesDiv.innerHTML = '';
-
       node.choices.forEach(choice => {
         const btn = document.createElement('button');
         btn.className = 'choice-btn';
         btn.textContent = choice.text;
         btn.setAttribute('role', 'listitem');
         btn.onclick = () => {
-          bgAudio.play().catch(() => {});
+          if (!hasInteracted) {
+              hasInteracted = true;
+          }
+          attemptToPlayAudio();
           loadStoryNode(choice.next);
           updateBranch(choice.text);
         };
@@ -348,17 +409,19 @@
       branchDiv.appendChild(p);
       branchDiv.scrollTop = branchDiv.scrollHeight;
     }
-
+    
+    // --- INITIALIZATION ---
     loadStoryNode('start');
-
-    bgAudio.volume = volumeSlider.value;
-    bgAudio.play().catch(() => {});
 
     volumeSlider.addEventListener('input', () => {
       bgAudio.volume = volumeSlider.value;
-      bgAudio.play().catch(() => {});
+      if (!hasInteracted) {
+          hasInteracted = true;
+      }
+      attemptToPlayAudio();
       volumeSlider.setAttribute('aria-valuenow', volumeSlider.value);
     });
+
   </script>
 </body>
 </html>
