@@ -146,242 +146,176 @@
       bulbasaur: "https://projectpokemon.org/images/normal-sprite/bulbasaur.gif",
       charmander: "https://projectpokemon.org/images/normal-sprite/charmander.gif",
       squirtle: "https://projectpokemon.org/images/normal-sprite/squirtle.gif",
-      pikachu: "https://projectpokemon.org/images/normal-sprite/pikachu.gif"
+      pikachu: "https://projectpokemon.org/images/normal-sprite/pikachu.gif",
+      rival: "https://projectpokemon.org/images/normal-sprite/rattata.gif" // Using Rattata as a placeholder for rival sprite
     };
 
     // Story data with animated sprites for starters and Pikachu
     const storyData = {
       start: {
-        text: "You wake up in Pallet Town. What will you do?",
-        avatar: animatedSprites.pikachu,
+        text: "You wake up in Pallet Town. Your adventure is about to begin!",
+        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
         choices: [
-          { text: "Visit Professor Oak", next: "oak" },
-          { text: "Walk into tall grass", next: "grass" },
-          { text: "Check your Pokédex", next: "dex" },
-          { text: "Talk to your mom", next: "mom" },
-          { text: "Go to your room", next: "room" }
+          { text: "Visit Professor Oak to get a Pokémon", next: "oak" },
+          { text: "Head north towards Route 1", next: "route1" },
+          { text: "Talk to your mom before you leave", next: "mom" }
         ]
       },
       oak: {
-        text: "Professor Oak offers you a starter Pokémon. Choose wisely!",
+        text: "Professor Oak: 'Welcome! It's time to choose your very first Pokémon!'",
+        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+        choices: [
+          { text: "Choose Bulbasaur, the grass-type", next: "bulbasaur" },
+          { text: "Choose Charmander, the fire-type", next: "charmander" },
+          { text: "Choose Squirtle, the water-type", next: "squirtle" },
+        ]
+      },
+      // MODIFIED: This path is now a major branch of the story
+      bulbasaur: {
+        text: "You chose Bulbasaur! As you turn to leave, your Rival, Blue, appears!",
         avatar: animatedSprites.bulbasaur,
         choices: [
-          { text: "Choose Bulbasaur", next: "bulbasaur" },
-          { text: "Choose Charmander", next: "charmander" },
-          { text: "Choose Squirtle", next: "squirtle" },
-          { text: "Ask for Pikachu", next: "pikachu" },
-          { text: "Decline and leave", next: "leaveLab" }
+          { text: "What does he want?", next: "rivalIntroCharmander" }
         ]
       },
-      grass: {
-        text: "A wild Pikachu appears! It looks ready to battle.",
-        avatar: animatedSprites.pikachu,
+      charmander: {
+        text: "You chose Charmander! As you turn to leave, your Rival, Blue, appears!",
+        avatar: animatedSprites.charmander,
         choices: [
-          { text: "Throw Pokéball", next: "catch" },
-          { text: "Run away", next: "run" },
-          { text: "Battle it", next: "battle" },
-          { text: "Offer berries", next: "berries" }
+          { text: "What does he want?", next: "rivalIntroSquirtle" }
         ]
       },
-      dex: {
-        text: "Your Pokédex shows 4 Pokémon registered: Bulbasaur, Charmander, Squirtle, and Pikachu.",
-        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png",
+      squirtle: {
+        text: "You chose Squirtle! As you turn to leave, your Rival, Blue, appears!",
+        avatar: animatedSprites.squirtle,
         choices: [
-          { text: "Go back", next: "start" }
+          { text: "What does he want?", next: "rivalIntroBulbasaur" }
+        ]
+      },
+      // NEW: Rival battle sequence
+      rivalIntroCharmander: {
+        text: "Blue: 'You took Bulbasaur? I'll take this one then!' Blue chose Charmander. 'Let's battle!'",
+        avatar: animatedSprites.rival,
+        choices: [
+          { text: "Battle Blue!", next: "battle" }
+        ]
+      },
+      rivalIntroSquirtle: {
+        text: "Blue: 'You took Charmander? I'll take this one then!' Blue chose Squirtle. 'Let's battle!'",
+        avatar: animatedSprites.rival,
+        choices: [
+          { text: "Battle Blue!", next: "battle" }
+        ]
+      },
+      rivalIntroBulbasaur: {
+        text: "Blue: 'You took Squirtle? I'll take this one then!' Blue chose Bulbasaur. 'Let's battle!'",
+        avatar: animatedSprites.rival,
+        choices: [
+          { text: "Battle Blue!", next: "battle" }
+        ]
+      },
+      battle: {
+        text: "The battle is intense! Your Pokémon is giving it its all!",
+        avatar: animatedSprites.pikachu, // Generic battle sprite
+        choices: [
+          { text: "Use your strongest attack!", next: "battleWin" },
+          { text: "Try a defensive move...", next: "battleLose" }
+        ]
+      },
+      battleWin: {
+        text: "You won! Blue is frustrated but respects your strength. 'Hmph! Smell ya later!' He runs off.",
+        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/boulder-badge.png",
+        choices: [
+          { text: "Begin your journey on Route 1", next: "route1" }
+        ]
+      },
+      battleLose: {
+        text: "You lost, but your Pokémon grew stronger from the experience. Blue smirks, 'Heh! You're no match for me!' He runs off.",
+        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/40.png",
+        choices: [
+          { text: "Heal up and begin your journey on Route 1", next: "route1" }
+        ]
+      },
+      // MODIFIED: Route 1 is now a real location with choices
+      route1: {
+        text: "You're on Route 1. Tall grass rustles around you. The path to Viridian City is straight ahead.",
+        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/16.png",
+        choices: [
+          { text: "Walk in the tall grass", next: "grassEncounter" },
+          { text: "Continue north to Viridian City", next: "viridian" }
+        ]
+      },
+      grassEncounter: {
+        text: "A wild Pidgey appears! It looks ready to battle.",
+        avatar: "https://projectpokemon.org/images/normal-sprite/pidgey.gif",
+        choices: [
+          { text: "Try to catch it!", next: "catchSuccess" },
+          { text: "Run away", next: "route1" }
+        ]
+      },
+      catchSuccess: {
+        text: "You caught the Pidgey! It's been added to your team.",
+        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png",
+        choices: [
+          { text: "Awesome! Keep exploring Route 1", next: "route1" }
         ]
       },
       mom: {
-        text: "Your mom gives you a potion and wishes you luck on your journey.",
+        text: "Mom: 'Be safe on your journey! Don't forget to change your underwear! Here's a Potion.'",
         avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png",
         choices: [
-          { text: "Say thanks", next: "start" },
-          { text: "Ask for lunch", next: "lunch" }
+          { text: "Say thanks and leave", next: "start" },
         ]
       },
-      room: {
-        text: "You find your old Pokégear and a map. The world awaits!",
-        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/52.png",
-        choices: [
-          { text: "Check the map", next: "map" },
-          { text: "Go back outside", next: "start" }
-        ]
-      },
-      lunch: {
-        text: "You eat a delicious sandwich and feel energized for your adventure.",
-        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png",
-        choices: [
-          { text: "Back to town", next: "start" }
-        ]
-      },
-      map: {
-        text: "The map shows Viridian City to the north and Mt. Moon to the east.",
-        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png",
-        choices: [
-          { text: "Head to Viridian City", next: "viridian" },
-          { text: "Explore Mt. Moon", next: "mtMoon" },
-          { text: "Back to town", next: "start" }
-        ]
-      },
+      // MODIFIED: Viridian City is now a hub with more to do
       viridian: {
-        text: "Viridian City is bustling with trainers and shops. You feel excited.",
-        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png",
+        text: "You've arrived in Viridian City! It's much bigger than Pallet Town.",
+        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png",
         choices: [
-          { text: "Visit the Poké Mart", next: "pokeMart" },
-          { text: "Challenge the Gym", next: "gym" },
-          { text: "Return to Pallet Town", next: "start" }
+          { text: "Visit the Pokémon Center to heal", next: "pokeCenter" },
+          { text: "Go to the Poké Mart", next: "pokeMart" },
+          { text: "Challenge the Viridian Gym", next: "gymLocked" },
+          { text: "Head west to Route 22", next: "route22" },
+          { text: "Return to Pallet Town", next: "route1" }
         ]
       },
-      mtMoon: {
-        text: "Mt. Moon is dark and mysterious. You hear strange noises.",
-        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png",
+      // NEW: More locations and events
+      pokeCenter: {
+        text: "Nurse Joy: 'Welcome to the Pokémon Center! We've restored your Pokémon to full health.'",
+        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
         choices: [
-          { text: "Explore deeper", next: "cave" },
-          { text: "Turn back", next: "map" }
+          { text: "Thank Nurse Joy and exit", next: "viridian" }
+        ]
+      },
+      gymLocked: {
+        text: "You try to enter the Gym, but the door is locked. A sign says the leader is away.",
+        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/57.png",
+        choices: [
+          { text: "Oh well. Back to the city", next: "viridian" }
+        ]
+      },
+      route22: {
+        text: "Route 22 leads towards the Pokémon League. You can see a large building in the distance, but the path is blocked.",
+        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/22.png",
+        choices: [
+          { text: "Maybe I should train more first...", next: "viridian" }
         ]
       },
       pokeMart: {
-        text: "The Poké Mart is stocked with potions, Pokéballs, and more.",
-        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png",
+        text: "The Poké Mart is stocked with Potions and Pokéballs.",
+        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png",
         choices: [
-          { text: "Buy a Potion", next: "buyPotion" },
           { text: "Buy Pokéballs", next: "buyPokeballs" },
           { text: "Leave the Mart", next: "viridian" }
         ]
       },
-      gym: {
-        text: "The Gym Leader awaits. Are you ready for the challenge?",
-        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/56.png",
-        choices: [
-          { text: "Battle the Gym Leader", next: "gymBattle" },
-          { text: "Train more", next: "train" },
-          { text: "Leave the Gym", next: "viridian" }
-        ]
-      },
-      buyPotion: {
-        text: "You bought a Potion. It might come in handy.",
-        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/potion.png",
-        choices: [
-          { text: "Buy more", next: "pokeMart" },
-          { text: "Leave the Mart", next: "viridian" }
-        ]
-      },
       buyPokeballs: {
-        text: "You bought some Pokéballs. Ready to catch more Pokémon!",
+        text: "You bought 5 Pokéballs. Now you're ready to catch more Pokémon!",
         avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png",
         choices: [
-          { text: "Buy more", next: "pokeMart" },
           { text: "Leave the Mart", next: "viridian" }
         ]
       },
-      gymBattle: {
-        text: "You battle the Gym Leader and win! You earned a badge!",
-        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/56.png",
-        choices: [
-          { text: "Celebrate", next: "celebrate" },
-          { text: "Continue journey", next: "final" }
-        ]
-      },
-      train: {
-        text: "You train hard and your Pokémon grow stronger.",
-        avatar: animatedSprites.pikachu,
-        choices: [
-          { text: "Battle the Gym Leader", next: "gymBattle" },
-          { text: "Keep training", next: "train" },
-          { text: "Leave the Gym", next: "viridian" }
-        ]
-      },
-      celebrate: {
-        text: "You celebrate your victory with friends and prepare for new adventures.",
-        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png",
-        choices: [
-          { text: "Continue journey", next: "final" }
-        ]
-      },
-      cave: {
-        text: "Inside Mt. Moon, you find a rare Pokémon egg!",
-        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/174.png",
-        choices: [
-          { text: "Take the egg", next: "egg" },
-          { text: "Leave it and exit", next: "map" }
-        ]
-      },
-      egg: {
-        text: "You carefully take the egg. It might hatch into something amazing.",
-        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/174.png",
-        choices: [
-          { text: "Return to Pallet Town", next: "start" }
-        ]
-      },
-      bulbasaur: {
-        text: "Bulbasaur joins your team! Ready for adventure!",
-        avatar: animatedSprites.bulbasaur,
-        choices: [
-          { text: "Continue", next: "start" }
-        ]
-      },
-      charmander: {
-        text: "Charmander joins your team! The flame burns bright!",
-        avatar: animatedSprites.charmander,
-        choices: [
-          { text: "Continue", next: "start" }
-        ]
-      },
-      squirtle: {
-        text: "Squirtle joins your team! Ready to splash into battle!",
-        avatar: animatedSprites.squirtle,
-        choices: [
-          { text: "Continue", next: "start" }
-        ]
-      },
-      pikachu: {
-        text: "Oak smiles and gives you Pikachu! A rare gift!",
-        avatar: animatedSprites.pikachu,
-        choices: [
-          { text: "Continue", next: "start" }
-        ]
-      },
-      leaveLab: {
-        text: "You leave the lab without a Pokémon. The journey is yours to choose.",
-        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png",
-        choices: [
-          { text: "Back to town", next: "start" }
-        ]
-      },
-      catch: {
-        text: "You caught Pikachu! Your adventure begins!",
-        avatar: animatedSprites.pikachu,
-        choices: [
-          { text: "Continue", next: "start" }
-        ]
-      },
-      run: {
-        text: "You safely return to town. Maybe next time!",
-        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png",
-        choices: [
-          { text: "Back to town", next: "start" }
-        ]
-      },
-      battle: {
-        text: "You battle Pikachu and win! What a fight!",
-        avatar: animatedSprites.pikachu,
-        choices: [
-          { text: "Continue", next: "start" }
-        ]
-      },
-      berries: {
-        text: "Pikachu is happy and follows you. A new friend!",
-        avatar: animatedSprites.pikachu,
-        choices: [
-          { text: "Back to town", next: "start" }
-        ]
-      },
-      final: {
-        text: "Your Pokémon adventure continues! Explore, battle, and become a champion!",
-        avatar: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png",
-        choices: [
-          { text: "Restart Adventure", next: "start" }
-        ]
-      }
     };
 
     const avatarImg = document.getElementById('avatar');
@@ -399,16 +333,15 @@
       avatarImg.alt = "Sprite";
       storyText.textContent = node.text;
 
-      // Clear previous choices
       choicesDiv.innerHTML = '';
 
-      // Create buttons for choices
       node.choices.forEach(choice => {
         const btn = document.createElement('button');
         btn.className = 'choice-btn';
         btn.textContent = choice.text;
         btn.setAttribute('role', 'listitem');
         btn.onclick = () => {
+          bgAudio.play().catch(() => {});
           loadStoryNode(choice.next);
           updateBranch(choice.text);
         };
@@ -423,17 +356,14 @@
       branchDiv.scrollTop = branchDiv.scrollHeight;
     }
 
-    // Initialize game
     loadStoryNode('start');
 
-    // Audio setup
     bgAudio.volume = volumeSlider.value;
-    bgAudio.play().catch(() => {
-      // Autoplay might be blocked until user interaction
-    });
+    bgAudio.play().catch(() => {});
 
     volumeSlider.addEventListener('input', () => {
       bgAudio.volume = volumeSlider.value;
+      bgAudio.play().catch(() => {});
       volumeSlider.setAttribute('aria-valuenow', volumeSlider.value);
     });
   </script>
